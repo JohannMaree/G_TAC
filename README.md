@@ -1,2 +1,2 @@
 # G_TAG
-GetDP Thermal Analysis Generator
+GetDP Thermal Analysis-file Generator
