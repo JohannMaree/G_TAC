@@ -1,0 +1,17 @@
+G_TAG HELP
+Command List:
+-------------------------------------
+EXIT 		- exits application
+LOAD		- load input file
+SAVE 		- save current command
+CLCM		- clear current registers of stored entities
+LIST		- displays list of created entities
+
+Entity Creations:
+VAR			- create a new variable with specified value
+IVAR 		- create a new interactive variable with specified values
+RGN			- create a region with specified 
+GROUP		- define a global region group of sub-regions
+SET			- add parameters to a region or global region group
+
+COMPILE 	- create ASCII .pro file 
