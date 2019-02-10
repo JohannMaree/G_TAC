@@ -1,0 +1,18 @@
+IVAR kR=100 	DESC=ThermCondCoeffRight 		MENU=Analysis MAX=600
+IVAR kL=20 	DESC=ThermCondCoeffLeft 		MENU=Analysis MAX=100
+IVAR h=25 	DESC=ThermalConvectionCoefficient 	MENU=Analysis
+IVAR TINF=80 	DESC=InfiniteConvectionTemperature 	MENU=Analysis
+IVAR Tfix=40 	DESC=FixedTemperature 			MENU=Analysis
+IVAR Qflux=60 	DESC=HeatFlux 				MENU=Analysis
+
+RGN RECR=1000 	DESC=RectangleRight 	COND=kL
+RGN RECL=1001 	DESC=RectangleLeft 	COND=kR
+RGN R1=100 	DESC=sideFixedTemp 	TEMP=Tfix
+RGN L1=101 	DESC=sideHeatFlux 	FLUX=Qflux
+
+GROUP recs RECR RECL
+GROUP sides R1 L1
+
+SET RECL COND=kL
+SET RECR COND=kR
+

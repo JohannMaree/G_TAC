@@ -1,0 +1,87 @@
+#pragma once
+#include <string>
+#include <vector>
+
+#include "Constraint.h"
+#include "FunctionSpace.h"
+#include "Jacobian.h"
+#include "Integration.h"
+#include "Formulation.h"
+#include "Resolution.h"
+#include "PostProcessing.h"
+#include "PostOperation.h"
+
+namespace gobject{
+	
+	//Global Variables
+	extern std::string sVarConduction;
+	extern std::string sGroupConduction;
+
+	extern std::string sVarConvection;
+	extern std::string sVarConvTInf;
+	extern std::string sGroupConvection;
+
+	extern std::string sVarRadiation;
+	extern std::string sVarRadTInf;
+	extern std::string sGroupRadiation;
+
+	extern std::string sVarGeneration;
+	extern std::string sGroupGeneration;
+
+	extern std::string sVarHeatFlux;
+	extern std::string sGroupHeatFlux;
+
+	extern std::string sVarTempConstraint;
+	extern std::string sGroupTemperature;
+
+	extern std::string charT;
+	extern std::string charQ;
+	extern std::string charQgen;
+
+	extern std::string charTfile;
+	extern std::string charQfile;
+
+	extern std::string charTfile;
+	extern std::string charQfile;
+
+	extern std::string defNamePostOperation;
+	extern std::string defNamePostProcess;
+	extern std::string defNameResolution;
+	extern std::string defNameReSystem;
+	extern std::string defNameFormulation;
+	extern std::string defFormEQType;
+	extern std::string defFSpace;
+
+	extern std::string TIntegration;
+	extern std::string TJacobianVol;
+	extern std::string TJacobianSur;
+	extern std::string TDomain;
+
+	//GetDP Flags
+	extern bool GFlagConduction;
+	extern bool GFlagConvection;
+	extern bool GFlagRadiation;
+	extern bool GFlagGeneration;
+	extern bool GFlagHeatFlux;
+	extern bool GFlagTemperature;
+	extern bool GFlag3Dim;
+	extern short int GFlagSysOrder;
+	extern short int GFlagBFunctions;
+
+	//Function Declarations
+	void initGFlags();
+	void clearGlobalArrays();
+
+}
+
+//GetDP Object GLobal Array Definitions
+extern std::vector<std::string> GArr_Groups;
+extern std::vector<std::string> GArr_Functions;
+extern std::vector<gobject::Constraint> GArr_Constraints;
+extern std::vector<gobject::FunctionSpace> GArr_FunctionSpaces;
+extern std::vector<gobject::Jacobian> GArr_Jacobians;
+extern std::vector<gobject::Integration> GArr_Integrations;
+extern std::vector<gobject::Formulation> GArr_Formulations;
+extern std::vector<gobject::Resolution> GArr_Resolutions;
+extern std::vector<gobject::PostProcessing> GArr_PostProcesses;
+extern std::vector<gobject::PostOperation> GArr_PostOperations;

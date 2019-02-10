@@ -1,0 +1,106 @@
+#1
+#2
+#3------------------------------------------------------------------------------------------------
+LOAD command: 
+loads a list of commands from an input file.
+
+Syntax: LOAD [filename]
+#4------------------------------------------------------------------------------------------------
+SAVE command:
+saves the list of current commands to a file.
+
+Syntax: SAVE [filename]
+#5------------------------------------------------------------------------------------------------
+CLCM command:
+purges the registry of stored commands and variables.
+
+Syntax: CLCM
+#6------------------------------------------------------------------------------------------------
+LIST command:
+displays a list of stored entities of specified type
+
+Syntax: LIST [entityType]
+where: entityType = VAR, IVAR, RGN, GRGN		  
+#7------------------------------------------------------------------------------------------------
+VAR command:
+designates a variable with /name/ to store a numerical /value/.
+
+Syntax: VAR [name]=[value] [opt:DESC=description]
+#8------------------------------------------------------------------------------------------------
+IVAR command:
+designates an interactive variable with /name/ to store a numerical /value/.
+interactive variables are editable from within the ONELAB interface.
+
+Syntax: IVAR [name]=[default value] [opt:DESC=description], 
+							[opt:MENU=classification],
+							
+							For a Type 2 Interactive Variable (Bounded Type):
+							MIN=[minimum possible value]
+							MAX=[maximum possible value]
+							STEP=[increment/decrement value]
+							
+							For a Type 3 Interactive Variable (Choice Type):
+							CHOICES=[1,2,3,...] -OR- CHOICES=[1="Choice1",2="Choice2",...]
+#9------------------------------------------------------------------------------------------------
+RGN command:
+creates a Region with /r_name/ to refer to a numerical /identifier/.
+
+Syntax: RGN [/r_name/]=[/identifier/] [opt:DESC=description]
+								
+								Optional Regional Property Specifications:
+								
+								For a Thermal Conduction Zone:
+								[opt:COND=Conduction Constant(k)]
+								
+								For a Thermal Convection Zone:
+								[opt:CONV=Convection Constant(h)]
+								
+								For a Thermal Radiation Zone:
+								[opt:RAD=Surface Radiation Factor(ε)]
+								
+								For a Heat Generation Zone:
+								[opt:GEN=Heat Generated (W/m^2)]
+								
+								For a Dirichlet boundary condition (Type1) Zone:
+								[opt:TEMP=Region Temperature (K)]
+								
+								For a Neumann boundary condition (Type2) Zone:
+								[opt:FLUX=Region Flux (W/m^2)]
+								
+								
+#10-----------------------------------------------------------------------------------------------
+GROUP command:
+defines a Global Region Group with /gr_name/ with sub regions /r_name(s)/.
+
+Syntax: GROUP [/gr_name/] [/r_name(s)/] [opt:DESC=description]
+#11-----------------------------------------------------------------------------------------------
+SET command:
+sets a Region [/r_name/] or Global Region Group [/gr_name/] with specified /property(s)/.
+
+Syntax: SET [/r_name/ -OR- /gr_name/] 	[/property/=numerical_value]
+
+										Regional Property Specifications:
+										
+										For a Thermal Conduction Zone:
+										[opt:COND=Conduction Constant(k)]
+										
+										For a Thermal Convection Zone:
+										[opt:CONV=Convection Constant(h)]
+										
+										For a Thermal Radiation Zone:
+										[opt:RAD=Surface Radiation Factor(ε)]
+										
+										For a Heat Generation Zone:
+										[opt:GEN=Heat Generated (W/m^2)]
+										
+										For a Dirichlet boundary condition (Type1) Zone:
+										[opt:TEMP=Region Temperature (K)]
+								
+										For a Neumann boundary condition (Type2) Zone:
+										[opt:FLUX=Region Flux (W/m^2)]
+#12-----------------------------------------------------------------------------------------------
+COMPILE command:
+creates an ASCII .pro file for analysis by GetDP.
+
+Syntax: COMPILE [/filename.pro/]
+										

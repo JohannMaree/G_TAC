@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6924eeff-791f-464f-983a-4dfa56f39fca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="src\Source Files\io">
+      <UniqueIdentifier>{0d1a44b4-6325-45bf-8a6c-157dd59d4858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Header Files\io">
+      <UniqueIdentifier>{2bffa70d-96f7-462c-b0b3-db563dd09047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Source Files\gobjects">
+      <UniqueIdentifier>{1786d09b-66be-4e12-870c-778c021ee4e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Header Files\gobjects">
+      <UniqueIdentifier>{eb6bf1a9-cf77-4a9e-a266-8f7998acbcf9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\io\proxStrings.cpp">
+      <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\io\proxFiles.cpp">
+      <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\region.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\variable.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\generate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\gobject.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\compile.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\Resolution.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\PostProcessing.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\PostOperation.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\Formulation.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\Integration.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\Jacobian.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\FunctionSpace.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gobjects\Constraint.cpp">
+      <Filter>src\Source Files\gobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\command.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\execute.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\io\proxCommands.cpp">
+      <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\region.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\variable.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\io\proxFiles.h">
+      <Filter>src\Header Files\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\io\proxStrings.h">
+      <Filter>src\Header Files\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\generate.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\gobject.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\Jacobian.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\FunctionSpace.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\Integration.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\Formulation.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\Resolution.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\PostProcessing.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\PostOperation.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\compile.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gobjects\Constraint.h">
+      <Filter>src\Header Files\gobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\command.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\execute.h">
+      <Filter>src\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\io\proxCommands.h">
+      <Filter>src\Header Files\io</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="G_TAG.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\src\io\help.txt">
+      <Filter>src\Source Files\io</Filter>
+    </Text>
+    <Text Include="..\src\io\syntax.txt">
+      <Filter>src\Source Files\io</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
