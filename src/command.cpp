@@ -16,9 +16,8 @@ namespace command {
 			execomm::help(comm);
 			break;
 		case 3:		//LOAD command
-			if (execomm::load(comm)) {
-				execomm::logComm(comm);
-			}	
+			if (execomm::load(comm))
+				
 			break;
 		case 4:		//SAVE command
 			execomm::save(comm);
@@ -30,16 +29,20 @@ namespace command {
 			execomm::list(comm);
 			break;
 		case 7:		//VAR command
-			variables::validate(comm,1);
+			if(variables::validate(comm,1))
+				
 			break;
 		case 8:		//IVAR command
-			variables::validate(comm,2);
+			if(variables::validate(comm,2))
+
 			break;
 		case 9:		//RGN command
-			regions::validate(comm,1);
+			if(regions::validate(comm,1))
+
 			break;
 		case 10:	//GRGN command
-			regions::validate(comm,2);
+			if(regions::validate(comm,2))
+
 			break;
 		case 11:	//SET command
 			execomm::set(comm);

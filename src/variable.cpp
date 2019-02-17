@@ -8,12 +8,14 @@ std::vector<std::unique_ptr<variables::variable>> GRegister_Variables;
 
 namespace variables {
 
-	void validate(const std::vector<std::string>& parm, int varType) {
+	bool validate(const std::vector<std::string>& parm, int varType) {
 		if (varType == 1) {			//addVar Command
 			addVar(parm);
+			return true;
 		}
 		else if (varType == 2) {	//addIVar COmmand
 			addIVar(parm);
+			return true;
 		}
 	}
 

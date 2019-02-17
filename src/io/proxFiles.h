@@ -15,8 +15,8 @@ namespace pfile {
 
 namespace execomm {
 
-	void logComm(const std::vector<std::string>& logComm);
-	void logText(const std::string& logtext);
+	void addLogEntry(const std::vector<std::string>& logComm);
+	void addLogEntry(const std::string& logtext);
 	int loadfile(const std::string& filename);
 	void displayHelp();
 	void displayCommHelp(int htype);

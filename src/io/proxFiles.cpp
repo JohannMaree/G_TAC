@@ -34,14 +34,14 @@ namespace pfile {
 
 namespace execomm {
 
-	void logText(const std::string& logtext) {
-		pfile::write(recordfilepath, logtext);
-	}
-
-	void logComm(const std::vector<std::string>& logComm) {
+	void addLogEntry(const std::vector<std::string>& logComm) {
 		for (ind i = 0; i < logComm.size(); ++i) {
 			pfile::write(recordfilepath, logComm[i]);
 		}
+	}
+
+	void addLogEntry(const std::string& logtext) {
+		pfile::write(recordfilepath, logtext);
 	}
 
 	int loadfile(const std::string& filename) {

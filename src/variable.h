@@ -43,7 +43,7 @@ namespace variables {
 		"CHOICES",	//5
 	};
 
-	void validate(const std::vector<std::string>& parm, int varType);
+	bool validate(const std::vector<std::string>& parm, int varType);
 	void addVar(const std::vector<std::string>& parm);
 	void addIVar(const std::vector<std::string>& parm);
 

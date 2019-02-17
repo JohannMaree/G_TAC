@@ -52,7 +52,7 @@ namespace regions {
 
 	};
 
-	void validate(const std::vector<std::string>& parm, int regType);
+	bool validate(const std::vector<std::string>& parm, int regType);
 	void addRgn(const std::vector<std::string>& parm);
 	void setProperties(const std::string& comm, region* rgn);
 	void addGRgn(const std::vector<std::string>& parm);

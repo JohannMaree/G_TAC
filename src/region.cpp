@@ -8,12 +8,14 @@ std::vector<regions::gregion> GRegister_GlobalRegions;
 
 namespace regions {
 
-	void validate(const std::vector<std::string>& parm, int regType) {
+	bool validate(const std::vector<std::string>& parm, int regType) {
 		if (regType == 1) {
 			addRgn(parm);
+			return true;
 		}
 		else if (regType == 2) {
 			addGRgn(parm);
+			return true;
 		}
 	}
 	 
