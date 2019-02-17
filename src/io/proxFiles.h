@@ -6,8 +6,7 @@
 #define recordfilepath "/log.txt"
 
 namespace pfile {
-
-	void log(const std::string& logtext);
+	
 	bool write(const std::string& fileName, std::string text = "\n");
 	void copy(const std::string& src, const std::string& copy);
 	void clear(const std::string& fname);
@@ -16,9 +15,10 @@ namespace pfile {
 
 namespace execomm {
 
+	void logComm(const std::vector<std::string>& logComm);
+	void logText(const std::string& logtext);
 	int loadfile(const std::string& filename);
 	void displayHelp();
 	void displayCommHelp(int htype);
-	
 
 }

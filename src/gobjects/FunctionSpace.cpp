@@ -32,4 +32,12 @@ namespace gobject {
 		return static_cast<int>(GArr_FunctionSpaces.size() - 1);
 	}
 
+	void addFunctionSpaceConstraint(fsConstraint* fsc, int fspos) {
+		GArr_FunctionSpaces[fspos].Constraints.emplace_back(fsc);
+	}
+
+	void addFunctionSpaceBasisFunction(fsBasisFunction* fsb, int fspos) {
+		GArr_FunctionSpaces[fspos].BasisFunctions.emplace_back(fsb);
+	}
+
 }

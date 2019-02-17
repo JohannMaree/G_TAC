@@ -16,7 +16,9 @@ namespace command {
 			execomm::help(comm);
 			break;
 		case 3:		//LOAD command
-			execomm::load(comm);
+			if (execomm::load(comm)) {
+				execomm::logComm(comm);
+			}	
 			break;
 		case 4:		//SAVE command
 			execomm::save(comm);

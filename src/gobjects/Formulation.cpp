@@ -80,4 +80,12 @@ namespace gobject {
 		return static_cast<int>(GArr_Formulations.size() - 1);
 	}
 
+	void addFormulationQuantity(formQuantity* fq, int fpos) {
+		GArr_Formulations[fpos].Quantities.emplace_back(fq);
+	}
+
+	void addFormulationEquation(formEquation* fe, int fpos) {
+		GArr_Formulations[fpos].Equations.emplace_back(fe);
+	}
+
 }

@@ -19,5 +19,5 @@ namespace gobject {
 
 	void addConstraint(Constraint& con);
 	int inArr_Constraint(std::string& compareName);
-
+	void addConstraintCase(cCase* conCase, int cpos = 0);
 }

@@ -65,6 +65,11 @@ namespace regions {
 			rgn->generation.value = rs[1];
 			rgn->generation.exists = true;
 		}
+		else if (pstring::icompare(rs[0], regParmList[7])) {	//JUMP
+			rgn->temp_disc.value = rs[1];
+			rgn->temp_disc.exists = true;
+		}
+
 	}
 
 	void addGRgn(const std::vector<std::string>& parm) {
@@ -152,6 +157,8 @@ namespace regions {
 					ret += "BC1_TEMP:" + GRegister_Regions[i].bcType1.value + " ";
 				if (GRegister_Regions[i].bcType2.exists)
 					ret += "BC2_FLUX:" + GRegister_Regions[i].bcType2.value + " ";
+				if (GRegister_Regions[i].temp_disc.exists)
+					ret += "T_JUMP:" + GRegister_Regions[i].temp_disc.value + " ";
 				ret += "\n";
 			}
 		}

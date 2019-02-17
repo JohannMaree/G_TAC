@@ -28,5 +28,7 @@ namespace gobject {
 	};
 
 	int defaultFormulation(int posFSpace);
+	void addFormulationQuantity(formQuantity* fq, int fpos = 0);
+	void addFormulationEquation(formEquation* fe, int fpos = 0);
 
 }

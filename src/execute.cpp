@@ -28,8 +28,14 @@ namespace execomm {
 		}
 	}
 
-	void load(const std::vector<std::string>& parm) {
+	bool load(const std::vector<std::string>& parm) {
 		int l = loadfile(parm[1]);
+		if (l == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 	void save(const std::vector<std::string>& parm) {

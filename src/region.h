@@ -18,11 +18,13 @@ namespace regions {
 		constant conduction;
 		constant convection;
 		constant radiation;
+		constant generation;
 
 		constant bcType1;	//Temp
 		constant bcType2;	//Flux
 
-		constant generation;
+		constant temp_disc;		//Temp Discontinuity
+
 	};
 
 	class gregion {
@@ -41,6 +43,8 @@ namespace regions {
 		"TEMP",		//4
 		"FLUX",		//5
 		"GEN",		//6
+		"JUMP",		//7
+
 	};
 
 	const std::string gRegParmList[] = {

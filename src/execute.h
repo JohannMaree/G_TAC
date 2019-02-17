@@ -5,7 +5,7 @@
 namespace execomm {
 
 	void help(const std::vector<std::string>& parm);
-	void load(const std::vector<std::string>& parm);
+	bool load(const std::vector<std::string>& parm);
 	void save(const std::vector<std::string>& parm);
 	void clcm();
 	void list(const std::vector<std::string>& parm);

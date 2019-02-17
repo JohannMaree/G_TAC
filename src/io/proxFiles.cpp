@@ -1,14 +1,11 @@
 #include "proxFiles.h"
 #include "proxCommands.h"
+#include "proxStrings.h"
 
 #include <iostream>
 #include <fstream>
 
 namespace pfile {
-
-	void log(const std::string& logtext) {
-		write(recordfilepath, logtext);
-	}
 
 	bool write(const std::string& fileName, std::string text) {
 		std::ofstream fo(fileName, std::ios::app);
@@ -36,6 +33,16 @@ namespace pfile {
 }
 
 namespace execomm {
+
+	void logText(const std::string& logtext) {
+		pfile::write(recordfilepath, logtext);
+	}
+
+	void logComm(const std::vector<std::string>& logComm) {
+		for (ind i = 0; i < logComm.size(); ++i) {
+			pfile::write(recordfilepath, logComm[i]);
+		}
+	}
 
 	int loadfile(const std::string& filename) {
 		std::ifstream fl(filename);

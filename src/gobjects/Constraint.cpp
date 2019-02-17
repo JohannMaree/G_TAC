@@ -24,4 +24,8 @@ namespace gobject {
 		return (-1);
 	}
 
+	void addConstraintCase(cCase* conCase, int cpos) {
+		GArr_Constraints[cpos].Cases.emplace_back(conCase);
+	}
+
 }
