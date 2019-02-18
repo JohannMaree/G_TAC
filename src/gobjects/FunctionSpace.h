@@ -18,12 +18,18 @@ namespace gobject {
 		std::string NameOfConstraint;
 	};
 
+	struct fsSubspace {
+		std::string Name;
+		std::string NameOfBasisFunction;
+	};
+
 	class FunctionSpace {
 	public:
 		std::string Name;
 		std::string Type;
 		std::vector<fsBasisFunction> BasisFunctions;
 		std::vector<fsConstraint> Constraints;
+		std::vector<fsSubspace> Subspaces;
 	};
 
 	int defaultFunctionSpace();

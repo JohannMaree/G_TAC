@@ -117,6 +117,9 @@ namespace generate {
 				ss << "}\n";
 				ss << "\t\t}\n";
  			}
+			if () {
+
+			}
 			for (ind j = 0; j < fs->Constraints.size(); ++j) {
 				gobject::fsConstraint* fscs = &(fs->Constraints[j]);
 

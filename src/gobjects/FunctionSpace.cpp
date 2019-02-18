@@ -1,3 +1,4 @@
+#include "FunctionSpace.h"
 #include "gobject.h"
 
 namespace gobject {
