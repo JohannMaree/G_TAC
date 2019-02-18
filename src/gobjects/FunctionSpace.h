@@ -36,5 +36,5 @@ namespace gobject {
 
 	void addFunctionSpaceConstraint(fsConstraint fsc, int fspos = 0);
 	void addFunctionSpaceBasisFunction(fsBasisFunction fsb, int fspos = 0);
-
+	
 }
