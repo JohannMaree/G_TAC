@@ -136,6 +136,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\region.cpp" />
     <ClCompile Include="..\src\variable.cpp" />
+    <ClCompile Include="TestTransfer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\compile.h" />

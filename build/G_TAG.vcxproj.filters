@@ -45,9 +45,6 @@
     <ClCompile Include="..\src\variable.cpp">
       <Filter>src\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\generate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\gobjects\gobject.cpp">
       <Filter>src\Source Files\gobjects</Filter>
     </ClCompile>
@@ -86,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="..\src\io\proxCommands.cpp">
       <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\generate.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestTransfer.cpp">
+      <Filter>src\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
