@@ -87,9 +87,6 @@
     <ClCompile Include="..\src\generate.cpp">
       <Filter>src\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestTransfer.cpp">
-      <Filter>src\Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -148,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="..\src\io\proxCommands.h">
       <Filter>src\Header Files\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\test_git.h">
+      <Filter>src\Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
