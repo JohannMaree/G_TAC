@@ -19,16 +19,28 @@ namespace gobject {
 		std::string IntegrationName;
 	};
 
+	struct formGlobal {
+		std::string GEQType;
+		std::string GEquation;
+		std::string DomainName;
+	};
+
 	class Formulation {
 	public:
 		std::string Name;
 		std::string Type;
 		std::vector<formQuantity> Quantities;
 		std::vector<formEquation> Equations;
+		std::vector<formGlobal> Globals;
 	};
 
 	int defaultFormulation(int posFSpace);
-	void addFormulationQuantity(formQuantity* fq, int fpos = 0);
-	void addFormulationEquation(formEquation* fe, int fpos = 0);
+
+	int addFormulation(Formulation& f);
+	int inArr_Formulation(std::string& compareName);
+
+	void addToFormulation(formQuantity& fq, int fpos = 0);
+	void addToFormulation(formEquation& fe, int fpos = 0);
+	void addToFormulation(formGlobal& fg, int fpos = 0);
 
 }

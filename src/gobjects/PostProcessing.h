@@ -21,4 +21,10 @@ namespace gobject {
 
 	int defaultPostProcessing(int posFormulation);
 
+	int addPostProcessing(PostProcessing& pp);
+	int inArr_PostProcessing(std::string& compareName);
+
+	void addToPostProcessing(postQuantity& pq, int ppos = 0);
+	int inPostQuantities(std::string compareName, int ppos = 0);
+
 }

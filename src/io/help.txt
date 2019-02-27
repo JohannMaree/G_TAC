@@ -13,5 +13,6 @@ IVAR 		- create a new interactive variable with specified values
 RGN			- create a region with specified 
 GROUP		- define a global region group of sub-regions
 SET			- add parameters to a region or global region group
+DEL			- delete a region or variable
 
 COMPILE 	- create ASCII .pro file 

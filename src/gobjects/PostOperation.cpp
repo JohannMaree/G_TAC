@@ -1,4 +1,3 @@
-#include "PostOperation.h"
 #include "gobject.h"
 
 namespace gobject {
@@ -23,7 +22,41 @@ namespace gobject {
 		opQ.OperationArgs.push_back("File \"" + charQfile + "\"");
 		pop.Operations.push_back(opQ);
 
-		GArr_PostOperations.push_back(pop);
+		addPostOperation(pop);
+	}
+
+	int addPostOperation(PostOperation& po) {
+		int in = inArr_PostOperation(po.Name);
+		if (in >= 0) {
+			if (pstring::icompare(po.NameOfPostProcessing, GArr_PostOperations[in].NameOfPostProcessing)) {
+				for (ind i = 0; i < po.Operations.size(); ++i) {
+					addToPostOperation(po.Operations[i], in);
+				}
+			}
+			else {
+				PostOperation poNew = po;
+				poNew.Name += "_" + po.NameOfPostProcessing;
+				GArr_PostOperations.push_back(poNew);
+				in = static_cast<int>(GArr_PostOperations.size() - 1);
+			}
+			return in;
+		}
+		else {
+			GArr_PostOperations.emplace_back(po);
+			return 0;
+		}
+	}
+
+	int inArr_PostOperation(std::string& compareName) {
+		for (int i = 0; i < GArr_PostOperations.size(); ++i) {
+			if (pstring::icompare(GArr_PostOperations[i].Name, compareName))
+				return i;
+		}
+		return (-1);
+	}
+
+	void addToPostOperation(postOp& pop, int ppos) {
+		GArr_PostOperations[ppos].Operations.emplace_back(pop);
 	}
 
 }

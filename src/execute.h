@@ -10,7 +10,7 @@ namespace execomm {
 	void clcm();
 	void list(const std::vector<std::string>& parm);
 	void set(const std::vector<std::string>& parm);
-
+	void del(const std::vector<std::string>& parm);
 
 	const std::string listParameters[] = {
 		"6",		//0 .:UPDATE:. amount of array elements

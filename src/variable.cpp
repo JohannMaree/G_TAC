@@ -1,6 +1,6 @@
 #include "variable.h"
-#include "proxStrings.h"
-#include "proxFiles.h"
+#include "io/proxStrings.h"
+#include "io/proxFiles.h"
 #include <iostream> //TEST
 #include <sstream>
 
@@ -17,6 +17,7 @@ namespace variables {
 			addIVar(parm);
 			return true;
 		}
+		return false;
 	}
 
 	void addVar(const std::vector<std::string>& parm) {
@@ -82,6 +83,14 @@ namespace variables {
 			}
 		}
 		GRegister_Variables.push_back(std::make_unique<ivariable>(x));
+	}
+
+	int inRegister(const std::string& vname) {
+		for (int i = 0; i < GRegister_Variables.size(); ++i) {
+			if (pstring::icompare(GRegister_Variables[i]->name, vname))
+				return i;
+		}
+		return (-1);
 	}
 
 	std::string listVariables() {
@@ -248,6 +257,15 @@ namespace variables {
 		}
 		ret << std::endl;
 		return ret.str();
+	}
+
+	void clearVariable(int pos) {
+		if (pos >= 0) {
+			GRegister_Variables.erase(GRegister_Variables.begin() + pos);
+		}
+		else {
+			GRegister_Variables.clear();
+		}
 	}
 
 }

@@ -1,5 +1,4 @@
 #include "gobject.h"
-#include "proxStrings.h"
 
 #include <sstream>
 
@@ -45,14 +44,28 @@ namespace gobject {
 	std::string sVarTempConstraint = "Type1BC";
 	std::string sGroupTemperature = "Temp_Elements";
 
+	//Temperature Discontinuity
+	std::string sVarTempDiscontinuity = "T_Disc";
+	std::string sGroupDiscontinuous = "Disc_Elements";
+
+	std::string sSpaceTCont = "T_Continuous";
+	std::string sSpaceTDisc = "T_Discontinous";
+	std::string sBasisFunctionDisc = charT + "_disc";
+
+	std::string charTdisc = charT + "dc";
+	std::string charTcont = charT + "cn";
+
+	std::string charTdiscfile = charTdisc + "_map.pos";
+	std::string charTcontfile = charTcont + "_map.pos";
+
 	//Constant Quantity Definitions
 	std::string charT = "T";
 	std::string charQ = "q";
 	std::string charQgen = "Qgen";
 
 	//Output File Names
-	std::string charTfile = "T_map.pos";
-	std::string charQfile = "q_map.pos";
+	std::string charTfile = charT + "_map.pos";
+	std::string charQfile = charQ + "_map.pos";
 
 
 	//GetDP Default Process Object Names
@@ -62,7 +75,8 @@ namespace gobject {
 	std::string defNameReSystem = "def_System";
 	std::string defNameFormulation = "def_ThermalForm";
 	std::string defFormEQType = "Integral";
-	std::string defFSpace = "Hgrad_Tspace";
+	std::string defFunctionSpace = "Hgrad_Tspace";
+	std::string defBasisFunction = charT + "_Node";
 
 	std::string TIntegration = "Integra";
 	std::string TJacobianVol = "Volume";
@@ -76,6 +90,7 @@ namespace gobject {
 	bool GFlagGeneration;
 	bool GFlagHeatFlux;
 	bool GFlagTemperature;
+	bool GFlagDiscontinuous;
 	bool GFlag3Dim;
 	short int GFlagSysOrder;
 	short int GFlagBFunctions;
@@ -88,6 +103,7 @@ namespace gobject {
 		GFlagGeneration = false;
 		GFlagHeatFlux = false;
 		GFlagTemperature = false;
+		GFlagDiscontinuous = false;
 
 		//Geometry Mechanisms
 		GFlag3Dim = false;

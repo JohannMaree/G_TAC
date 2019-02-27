@@ -1,6 +1,6 @@
 #include "command.h"
-#include "proxCommands.h"
-#include "proxFiles.h"
+#include "io/proxCommands.h"
+#include "io/proxFiles.h"
 #include "variable.h"
 #include "region.h"
 #include "compile.h"
@@ -17,7 +17,7 @@ namespace command {
 			break;
 		case 3:		//LOAD command
 			if (execomm::load(comm))
-				
+				execomm::addLogEntry(comm);
 			break;
 		case 4:		//SAVE command
 			execomm::save(comm);
@@ -29,20 +29,20 @@ namespace command {
 			execomm::list(comm);
 			break;
 		case 7:		//VAR command
-			if(variables::validate(comm,1))
-				
+			if (variables::validate(comm, 1))
+				execomm::addLogEntry(comm);
 			break;
 		case 8:		//IVAR command
 			if(variables::validate(comm,2))
-
+				execomm::addLogEntry(comm);
 			break;
 		case 9:		//RGN command
 			if(regions::validate(comm,1))
-
+				execomm::addLogEntry(comm);
 			break;
 		case 10:	//GRGN command
 			if(regions::validate(comm,2))
-
+				execomm::addLogEntry(comm);
 			break;
 		case 11:	//SET command
 			execomm::set(comm);
@@ -50,7 +50,9 @@ namespace command {
 		case 12:	//COMPILE command
 			compile::validate(comm);
 			break;
-
+		case 13:
+			execomm::del(comm);
+			break;
 
 		default:
 			std::cerr << "command not recognised. use HELP for a list of available commands.\n";

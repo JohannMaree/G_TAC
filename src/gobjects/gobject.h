@@ -11,6 +11,8 @@
 #include "PostProcessing.h"
 #include "PostOperation.h"
 
+#include "../io/proxStrings.h"
+
 namespace gobject{
 	
 	//Global Variables
@@ -34,12 +36,20 @@ namespace gobject{
 	extern std::string sVarTempConstraint;
 	extern std::string sGroupTemperature;
 
+	extern std::string sVarTempDiscontinuity;
+	extern std::string sGroupDiscontinuous;
+	extern std::string sSpaceTCont;
+	extern std::string sSpaceTDisc;
+	extern std::string sBasisFunctionDisc;
+	extern std::string charTdisc;
+	extern std::string charTcont;
+	extern std::string charTdiscfile;
+	extern std::string charTcontfile;
+
+	//Default Process Object Function Names
 	extern std::string charT;
 	extern std::string charQ;
 	extern std::string charQgen;
-
-	extern std::string charTfile;
-	extern std::string charQfile;
 
 	extern std::string charTfile;
 	extern std::string charQfile;
@@ -50,7 +60,8 @@ namespace gobject{
 	extern std::string defNameReSystem;
 	extern std::string defNameFormulation;
 	extern std::string defFormEQType;
-	extern std::string defFSpace;
+	extern std::string defFunctionSpace;
+	extern std::string defBasisFunction;
 
 	extern std::string TIntegration;
 	extern std::string TJacobianVol;
@@ -64,6 +75,7 @@ namespace gobject{
 	extern bool GFlagGeneration;
 	extern bool GFlagHeatFlux;
 	extern bool GFlagTemperature;
+	extern bool GFlagDiscontinuous;
 	extern bool GFlag3Dim;
 	extern short int GFlagSysOrder;
 	extern short int GFlagBFunctions;

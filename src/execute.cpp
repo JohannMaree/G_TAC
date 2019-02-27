@@ -1,9 +1,9 @@
 #include "execute.h"
 #include "command.h"
-#include "proxFiles.h"
-#include "proxCommands.h"
-#include "proxStrings.h"
-#include "gobject.h"
+#include "io/proxFiles.h"
+#include "io/proxCommands.h"
+#include "io/proxStrings.h"
+#include "gobjects/gobject.h"
 #include "variable.h"
 #include "region.h"
 
@@ -43,16 +43,17 @@ namespace execomm {
 	}
 
 	void clcm() {
-
 		//Clear Registers
 		gobject::clearGlobalArrays();
+		regions::clearRegion();
+		regions::clearGlobalRegion();
+		variables::clearVariable();
 
 		//Initialise G_Flags to defaults
 		gobject::initGFlags();
 
 		//Clear Record File
 		pfile::clear(recordfilepath);
-
 	}
 
 	void list(const std::vector<std::string>& parm) {
@@ -114,5 +115,56 @@ namespace execomm {
 		}
 	}
 
+	void del(const std::vector<std::string>& parm) {
+		if (pstring::icompare(parm[1], "VAR") || pstring::icompare(parm[1], "IVAR")) {
+			int regpos = variables::inRegister(parm[2]);
+			if (regpos >= 0) {
+				variables::clearVariable(regpos);
+				std::cout << "VAR:" << parm[2] << "(" << regpos << ") deleted.\n";
+			}
+			else {
+				if (pstring::icompare(parm[2], "ALL")) {
+					variables::clearVariable();
+					std::cout << "ALL VARIABLES deleted.\n";
+				}
+				else {
+					std::cerr << "VAR: " << parm[2] << " does not exist.\n";
+				}
+			}
+		}
+		else if (pstring::icompare(parm[1], "RGN")) {
+			int regpos = regions::inRegister(parm[2], 0);
+			if (regpos >= 0) {
+				regions::clearRegion(regpos);
+				std::cout << "RGN:" << parm[2] << "(" << regpos << ") deleted.\n";
+			}
+			else {
+				if (pstring::icompare(parm[2], "ALL")) {
+					regions::clearRegion();
+					std::cout << "ALL REGIONS deleted.\n";
+				}
+				else {
+					std::cerr << "RGN: " << parm[2] << " does not exist.\n";
+				}
+			}
+		}
+		else if (pstring::icompare(parm[1], "GROUP")) {
+			int regpos = regions::inRegister(parm[2], 1);
+			if (regpos >= 0) {
+				regions::clearGlobalRegion(regpos);
+				std::cout << "GROUP:" << parm[2] << "(" << regpos << ") deleted.\n";
+			}
+			else {
+				if (pstring::icompare(parm[2], "ALL")) {
+					regions::clearGlobalRegion();
+					std::cout << "ALL GROUPS deleted.\n";
+				}
+				else {
+					std::cerr << "GROUP: " << parm[2] << " does not exist.\n";
+				}
+			}
+		}
+		//End Delete FUnction
+	}
 
 }

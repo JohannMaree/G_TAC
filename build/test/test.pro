@@ -1,6 +1,6 @@
-kR = DefineNumber[100, Name "Analysis/ThermCondCoeffRight_kR", Label "kR", MAX 600, MIN 0];
-kL = DefineNumber[20, Name "Analysis/ThermCondCoeffLeft_kL", Label "kL", MAX 100, MIN 0];
-h = DefineNumber[25, Name "Analysis/ThermalConvectionCoefficient_h", Label "h", MIN 0];
+kR = DefineNumber[100, Name "Analysis/ThermCondCoeffRight_kR", Label "kR", MAX 600];
+kL = DefineNumber[20, Name "Analysis/ThermCondCoeffLeft_kL", Label "kL", MAX 100];
+h = DefineNumber[25, Name "Analysis/ThermalConvectionCoefficient_h", Label "h"];
 TINF = DefineNumber[80, Name "Analysis/InfiniteConvectionTemperature_TINF", Label "TINF"];
 Tfix = DefineNumber[40, Name "Analysis/FixedTemperature_Tfix", Label "Tfix"];
 Qflux = DefineNumber[60, Name "Analysis/HeatFlux_Qflux", Label "Qflux"];
@@ -8,11 +8,11 @@ Qflux = DefineNumber[60, Name "Analysis/HeatFlux_Qflux", Label "Qflux"];
 
 
 Group {
-	REC1 = Region[1000];
-	REC2 = Region[1001];
+	RECR = Region[1000];
+	RECL = Region[1001];
 	R1 = Region[100];
 	L1 = Region[101];
-	Cond_Elements = Region[{REC1,REC2}];
+	Cond_Elements = Region[{RECR,RECL}];
 	Flux_Elements = Region[{L1}];
 	Temp_Elements = Region[{R1}];
 	Domain_Hgrad_T = Region[{Cond_Elements,Flux_Elements,Temp_Elements}];
@@ -20,8 +20,8 @@ Group {
 
 
 Function {
-	conK[REC1] = kR;
-	conK[REC2] = kL;
+	conK[RECR] = kR;
+	conK[RECL] = kL;
 	Flux[L1] = Qflux;
 }
 
@@ -38,10 +38,10 @@ Constraint {
 FunctionSpace {
 	{ Name Hgrad_Tspace; Type Form0;
 		BasisFunction {
-			{ Name sN; NameOfCoef TN; Function BF_Node; Support Domain_Hgrad_T; Entity NodesOf[All]; }
+			{ Name sN; NameOfCoef T_Node; Function BF_Node; Support Domain_Hgrad_T; Entity NodesOf[All]; }
 		}
 		Constraint {
-			{ NameOfCoef TN; EntityType NodesOf; NameOfConstraint Type1BC; }
+			{ NameOfCoef T_Node; EntityType NodesOf; NameOfConstraint Type1BC; }
 		}
 	}
 }

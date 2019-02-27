@@ -23,6 +23,7 @@ namespace command {
 		"GROUP",	//10
 		"SET",		//11
 		"COMPILE",	//12
+		"DEL",		//13
 
 	};
 

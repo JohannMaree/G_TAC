@@ -18,4 +18,10 @@ namespace gobject {
 	};
 
 	void defaultResolution(int posFormulation);
+
+	int addResolution(Resolution& res);
+	int inArr_Resolutions(std::string& compareName);
+
+	void addToResolution(rSystemOps& so, int rpos = 0);
+
 }

@@ -103,4 +103,10 @@ COMPILE command:
 creates an ASCII .pro file for analysis by GetDP.
 
 Syntax: COMPILE [/filename.pro/]
+#13-----------------------------------------------------------------------------------------------
+DEL command:
+deletes a user created entity(variable,region,group) by name.
+
+Syntax: DEL [/entity_name/]
+
 										

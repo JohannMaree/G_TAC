@@ -46,10 +46,14 @@ namespace variables {
 	bool validate(const std::vector<std::string>& parm, int varType);
 	void addVar(const std::vector<std::string>& parm);
 	void addIVar(const std::vector<std::string>& parm);
+	
+	int inRegister(const std::string& vname);
 
 	std::string listVariables();
 	std::string listIVariables();
 	std::string listAllVariables();
+
+	void clearVariable(int pos = (-1));
 
 }
 

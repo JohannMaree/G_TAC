@@ -24,7 +24,6 @@ namespace regions {
 		constant bcType2;	//Flux
 
 		constant temp_disc;		//Temp Discontinuity
-
 	};
 
 	class gregion {
@@ -57,9 +56,13 @@ namespace regions {
 	void setProperties(const std::string& comm, region* rgn);
 	void addGRgn(const std::vector<std::string>& parm);
 	void setRgn(const std::vector<std::string>& parm);
+
 	std::string listRegions();
 	std::string listGlobalRegions();
 	int inRegister(const std::string& rname, short int rType);
+
+	void clearRegion(int pos = (-1));
+	void clearGlobalRegion(int pos = (-1));
 
 }
 

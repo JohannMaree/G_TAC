@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #define helpfilepath "../src/io/help.txt"
 #define syntaxfilepath "../src/io/syntax.txt"

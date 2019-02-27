@@ -1,2 +1,2 @@
 #pragma once
-//Test GIT synchronisation:
+//Test GIT sync version: DEL command

@@ -1,5 +1,5 @@
 #include "region.h"
-#include "proxStrings.h"
+#include "io/proxStrings.h"
 
 #include <iostream>
 
@@ -17,6 +17,7 @@ namespace regions {
 			addGRgn(parm);
 			return true;
 		}
+		return false;
 	}
 	 
 	void addRgn(const std::vector<std::string>& parm) {
@@ -190,14 +191,14 @@ namespace regions {
 	}
 
 	int inRegister(const std::string& rname, short int rType) {
-		if (rType == 0) {		//Search Rregister
+		if (rType == 0) {		//Search Region register
 			for (ind i = 0; i < GRegister_Regions.size(); ++i) {
 				if (pstring::icompare(rname, GRegister_Regions[i].name)) {
 					return static_cast<int>(i);
 				}
 			}
 		}
-		else if(rType == 1){	//Search GRregister
+		else if(rType == 1){	//Search Global Region register
 			for (ind i = 0; i < GRegister_GlobalRegions.size(); ++i) {
 				if (pstring::icompare(rname, GRegister_GlobalRegions[i].name)) {
 					return static_cast<int>(i);
@@ -205,6 +206,24 @@ namespace regions {
 			}
 		}
 		return (-1);
+	}
+
+	void clearRegion(int pos) {
+		if (pos >= 0) {
+			GRegister_Regions.erase(GRegister_Regions.begin() + pos);
+		}
+		else {
+			GRegister_Regions.clear();
+		}
+	}
+
+	void clearGlobalRegion(int pos) {
+		if (pos >= 0) {
+			GRegister_GlobalRegions.erase(GRegister_GlobalRegions.begin() + pos);
+		}
+		else {
+			GRegister_GlobalRegions.clear();
+		}
 	}
 
 }

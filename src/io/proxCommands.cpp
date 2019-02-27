@@ -1,8 +1,8 @@
 #include "proxCommands.h"
 #include "proxStrings.h"
 #include "proxFiles.h"
-#include "command.h"
-#include "gobject.h"
+#include "../command.h"
+#include "../gobjects/gobject.h"
 
 #include <iostream>//TEST
 

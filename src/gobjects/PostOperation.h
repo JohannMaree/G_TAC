@@ -18,4 +18,9 @@ namespace gobject {
 
 	void defaultPostOperation(int posPostProc = 0);
 
+	int addPostOperation(PostOperation& po);
+	int inArr_PostOperation(std::string& compareName);
+
+	void addToPostOperation(postOp& pop, int ppos = 0);
+
 }

@@ -41,7 +41,7 @@ namespace pstring {
 		if (a == b) {
 			return true;
 		}
-		else if (std::toupper(a) == std::toupper(b)) {
+		else if (std::tolower(a) == std::tolower(b)) {
 			return true;
 		}
 		else {

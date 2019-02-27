@@ -1,8 +1,8 @@
 #include "generate.h"
-#include "proxFiles.h"
-#include "proxStrings.h"
+#include "io/proxFiles.h"
+#include "io/proxStrings.h"
 #include "variable.h"
-#include "gobject.h"
+#include "gobjects/gobject.h"
 #include "compile.h"
 
 #include <sstream>
@@ -117,8 +117,29 @@ namespace generate {
 				ss << "}\n";
 				ss << "\t\t}\n";
  			}
-			if () {
-
+			if (fs->Subspaces.size() > 0) {			//If Subspaces exist
+				ss << "\t\tSubspace {\n";
+				for (ind j = 0; j < fs->Subspaces.size(); ++j) {
+					ss << "\t\t\t{ Name ";
+					ss << fs->Subspaces[j].Name << "; ";
+					ss << "NameOfBasisFunction {";
+					ss << fs->Subspaces[j].NameOfBasisFunction << "}; ";
+					ss << "}\n";
+				}
+				ss << "\t\t}\n";
+			}
+			if (fs->GlobalQuantities.size() > 0) {	//If GlobalQuantities exist
+				ss << "\t\tGlobalQuantity {\n";
+				for (ind j = 0; j < fs->GlobalQuantities.size(); ++j) {
+					ss << "\t\t\t{ Name ";
+					ss << fs->GlobalQuantities[j].Name << "; ";
+					ss << "Type ";
+					ss << fs->GlobalQuantities[j].Type << "; ";
+					ss << "NameOfCoef ";
+					ss << fs->GlobalQuantities[j].NameOfCoef << "; ";
+					ss << "}\n";
+				}
+				ss << "\t\t}\n";
 			}
 			for (ind j = 0; j < fs->Constraints.size(); ++j) {
 				gobject::fsConstraint* fscs = &(fs->Constraints[j]);
@@ -213,6 +234,14 @@ namespace generate {
 				ss << "Jacobian " << fe->JacobianName << "; ";
 				ss << "Integration " << fe->IntegrationName << "; ";
 				ss << "}\n";
+			}
+			if (f->Globals.size() > 0) {	//If formulation Globals exist
+				for (ind j = 0; j < f->Globals.size(); ++j) {
+					ss << "\t\t\t" << f->Globals[j].GEQType << "{";
+					ss << "[" << f->Globals[j].GEquation << "];";
+					ss << "In " << f->Globals[j].DomainName << ";";
+					ss << "}\n";
+				}
 			}
 			ss << "\t\t}\n";
 		}
