@@ -1,35 +1,46 @@
-kR = DefineNumber[100, Name "Analysis/ThermCondCoeffRight_kR", Label "kR", MAX 600];
-kL = DefineNumber[20, Name "Analysis/ThermCondCoeffLeft_kL", Label "kL", MAX 100];
-h = DefineNumber[25, Name "Analysis/ThermalConvectionCoefficient_h", Label "h"];
-TINF = DefineNumber[80, Name "Analysis/InfiniteConvectionTemperature_TINF", Label "TINF"];
-Tfix = DefineNumber[40, Name "Analysis/FixedTemperature_Tfix", Label "Tfix"];
+kO = DefineNumber[100, Name "Analysis/K_Outer_kO", Label "kO", MAX 600, MIN 0];
+kI = DefineNumber[200, Name "Analysis/K_Inner_kI", Label "kI", MAX 1000, MIN 0, STEP 2];
+kW = DefineNumber[800, Name "Analysis/K_Wire_kW", Label "kW", MAX 1000, MIN 0, STEP 4];
+h = DefineNumber[25, Name "Analysis/H_convec_h", Label "h"];
+Tinf = DefineNumber[80, Name "Analysis/Tinf_Convec_Tinf", Label "Tinf"];
+Tfix = DefineNumber[40, Name "Analysis/FixTemp_Tfix", Label "Tfix"];
 Qflux = DefineNumber[60, Name "Analysis/HeatFlux_Qflux", Label "Qflux"];
+Qgen1 = DefineNumber[200, Name "Analysis/HeatGenWire_Qgen1", Label "Qgen1"];
+Qgen2 = DefineNumber[0, Name "Analysis/HeatGenSQU_Qgen2", Label "Qgen2"];
 
 
 
 Group {
-	RECR = Region[1000];
-	RECL = Region[1001];
-	R1 = Region[100];
-	L1 = Region[101];
-	Cond_Elements = Region[{RECR,RECL}];
-	Flux_Elements = Region[{L1}];
-	Temp_Elements = Region[{R1}];
-	Domain_Hgrad_T = Region[{Cond_Elements,Flux_Elements,Temp_Elements}];
+	bound1 = Region[100];
+	bound2 = Region[101];
+	Rec1 = Region[1000];
+	Rec2 = Region[1001];
+	Wire = Region[1002];
+	Cond_Elements = Region[{Rec1,Rec2,Wire}];
+	Conv_Elements = Region[{Rec2}];
+	qGen_Elements = Region[{Wire}];
+	Flux_Elements = Region[{bound2,Rec2}];
+	Temp_Elements = Region[{bound1}];
+	Domain_Hgrad_T = Region[{Cond_Elements,Conv_Elements,qGen_Elements,Flux_Elements,Temp_Elements}];
 }
 
 
 Function {
-	conK[RECR] = kR;
-	conK[RECL] = kL;
-	Flux[L1] = Qflux;
+	Flux[bound2] = Qgen2;
+	condK[Rec1] = kO;
+	condK[Rec2] = kI;
+	convH[Rec2] = h;
+	TinfConv[Rec2] = Tinf;
+	Flux[Rec2] = Qflux;
+	condK[Wire] = kW;
+	qGen[Wire] = Qgen1;
 }
 
 
 Constraint {
 	{ Name Type1BC; Type Assign;
 		Case {
-			{ Region R1; Value Tfix; }
+			{ Region bound1; Value Tfix; }
 		}
 	}
 }
@@ -66,10 +77,10 @@ Integration {
 		Case {
 			{ Type Gauss;
 				Case{
-					{ GeoElement Point;		NumberOfPoints 1; }
-					{ GeoElement Line;		NumberOfPoints 3; }
+					{ GeoElement Point;			NumberOfPoints 1; }
+					{ GeoElement Line;			NumberOfPoints 3; }
 					{ GeoElement Triangle;		NumberOfPoints 4; }
-					{ GeoElement Quadrangle;		NumberOfPoints 4; }
+					{ GeoElement Quadrangle;	NumberOfPoints 4; }
 				}
 			}
 		}
@@ -83,8 +94,14 @@ Formulation {
 			{ Name T; Type Local; NameOfSpace Hgrad_Tspace; }
 		}
 		Equation {
-			Integral { [ conK[] * Dof{d T} , {d T} ];
+			Integral { [ condK[] * Dof{d T} , {d T} ];
 				In Cond_Elements; Jacobian Volume; Integration Integra; }
+			Integral { [ convH[] * Dof{T} , {T} ];
+				In Conv_Elements; Jacobian Surface; Integration Integra; }
+			Integral { [ -convH[] * TinfConv[] , {T} ];
+				In Conv_Elements; Jacobian Surface; Integration Integra; }
+			Integral { [ -qGen[] , {T} ];
+				In qGen_Elements; Jacobian Volume; Integration Integra; }
 			Integral { [ -Flux[] , {T} ];
 				In Flux_Elements; Jacobian Surface; Integration Integra; }
 		}
@@ -114,6 +131,9 @@ PostProcessing {
 			}}
 			{ Name q; Value {
 				Term{[ -{d T} ]; In Domain_Hgrad_T; Jacobian Volume; }
+			}}
+			{ Name Qgen; Value {
+				Term{[ qGen[] ]; In Domain_Hgrad_T; Jacobian Volume; }
 			}}
 		}
 	}

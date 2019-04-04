@@ -24,7 +24,9 @@ namespace command {
 		"SET",		//11
 		"COMPILE",	//12
 		"DEL",		//13
+		"GMSH",		//14
+		"GETDP",	//15
 
 	};
 
-}
+}//end namespace command

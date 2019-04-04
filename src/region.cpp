@@ -10,31 +10,31 @@ namespace regions {
 
 	bool validate(const std::vector<std::string>& parm, int regType) {
 		if (regType == 1) {
-			addRgn(parm);
-			return true;
+			return addRgn(parm);
 		}
 		else if (regType == 2) {
-			addGRgn(parm);
-			return true;
+			return addGRgn(parm);
 		}
 		return false;
 	}
-	 
-	void addRgn(const std::vector<std::string>& parm) {
+	
+	bool addRgn(const std::vector<std::string>& parm) {
 		region x;
 		std::vector<std::string> def;
 		def = pstring::lex(parm[1], '=');
 		x.name = def[0];
-		x.identifier = def[1];
 		int check = inRegister(x.name,0);
 		if (check == (-1)) {
+			x.identifier = def[1];
 			for (ind i = 2; i < parm.size(); ++i) {
 				setProperties(parm[i],&x);
 			}
 			GRegister_Regions.push_back(x);
+			return true;
 		}
 		else {
 			std::cerr << "Region:" << x.name << " already exists.\n";
+			return false;
 		}
 	}
 
@@ -42,7 +42,8 @@ namespace regions {
 		std::vector<std::string> rs = pstring::lex(comm, '=');
 		//Sub_Command Cases
 		if (pstring::icompare(rs[0], regParmList[0])) {		//DESC
-			rgn->description = rs[1];
+			rgn->description.value = rs[1];
+			rgn->description.exists = true;
 		}
 		else if (pstring::icompare(rs[0], regParmList[1])) {	//COND
 			rgn->conduction.value = rs[1];
@@ -57,12 +58,12 @@ namespace regions {
 			rgn->radiation.exists = true;
 		}
 		else if (pstring::icompare(rs[0], regParmList[4])) {	//TEMP
-			rgn->bcType1.value = rs[1];
-			rgn->bcType1.exists = true;
+			rgn->temperature.value = rs[1];
+			rgn->temperature.exists = true;
 		}
 		else if (pstring::icompare(rs[0], regParmList[5])) {	//FLUX
-			rgn->bcType2.value = rs[1];
-			rgn->bcType2.exists = true;
+			rgn->heatflux.value = rs[1];
+			rgn->heatflux.exists = true;
 		}
 		else if (pstring::icompare(rs[0], regParmList[6])) {	//GEN
 			rgn->generation.value = rs[1];
@@ -72,53 +73,85 @@ namespace regions {
 			rgn->temp_disc.value = rs[1];
 			rgn->temp_disc.exists = true;
 		}
+		else if (pstring::icompare(rs[0], regParmList[8])) {	//DIM
+			rgn->dimension.value = rs[1];
+			rgn->dimension.exists = true;
+		}
+		else if (pstring::icompare(rs[0], regParmList[9])) {	//TCONV
+			rgn->tconv.value = rs[1];
+			rgn->tconv.exists = true;
+		}
+		else if (pstring::icompare(rs[0], regParmList[10])) {	//TRAD
+			rgn->trad.value = rs[1];
+			rgn->trad.exists = true;
+		}
 
 	}
 
-	void addGRgn(const std::vector<std::string>& parm) {
+	bool addGRgn(const std::vector<std::string>& parm) {
 		int ex = inRegister(parm[1],1);
-		if (ex >= 0) {										//If exists
-			gregion y = GRegister_GlobalRegions[ex];
+		if (ex >= 0) {		//If GRegion exists
+			int reg = 0;
 			for (ind i = 2; i < parm.size(); ++i) {
-				int pos = inRegister(parm[i], 0);
-				if (pos >= 0) {
-					y.regions.emplace_back(&(GRegister_Regions[pos]));
+				int pos = inRegister(parm[i], 0);	
+				if (pos >= 0) {		//Region exists
+					if (inGRegion(parm[i], &GRegister_GlobalRegions[ex]) == (-1)) {	//If region not already in Group
+						GRegister_GlobalRegions[ex].regions.push_back(&(GRegister_Regions[pos]));
+						++reg;
+					}
 				}
-				else {
+				else {				//Region does not exist
 					std::cerr << "Region:" << parm[i] << " does not exist.\n";
 				}
 			}
-			GRegister_GlobalRegions.erase(GRegister_GlobalRegions.begin() + ex);
-			GRegister_GlobalRegions.push_back(y);
+
+			if (reg > 0) {	//Verify something was added
+				return true;
+			}
+			else {	//Nothing changed
+				return false;
+			}
 		}
-		else {
+		else {				//Else Create new GRegion
 			gregion y;
 			y.name = parm[1];
+			int reg = 0;
 			for (ind i = 2; i < parm.size(); ++i) {
 				if (pstring::ifind(parm[i],gRegParmList[0])) {	//DESC
 					std::vector<std::string> rs  = pstring::lex(parm[i], '=');
-					y.description = rs[1];
+					y.description.value = rs[1];
 				}
 				else {
 					int pos = inRegister(parm[i], 0);
-					if (pos >= 0) {
-						y.regions.push_back(&(GRegister_Regions[pos]));
+					if (pos >= 0) {//If rgn exists
+						if (inGRegion(parm[i], &y) == (-1)) { //If rgn not already in group
+							y.regions.push_back(&(GRegister_Regions[pos]));
+							++reg;
+						}
 					}
 					else {
 						std::cerr << "Region:" << parm[i] << " does not exist.\n";
 					}
 				}
 			}
-			GRegister_GlobalRegions.push_back(y);
+			if (reg > 0) {
+				GRegister_GlobalRegions.push_back(y);
+				return true;
+			}
+			else {
+				std::cerr << "GRegion NOT created, parameters contain no valid regions.\n";
+				return false;
+			}
 		}
 	}
 
-	void setRgn(const std::vector<std::string>& parm) {
+	bool setRgn(const std::vector<std::string>& parm) {
 		int pos = inRegister(parm[1], 0);
 		if (pos >= 0) {			//Add parameters to RGN
 			for (ind i = 2; i < parm.size(); ++i) {
 				setProperties(parm[i], &GRegister_Regions[pos]);
 			}
+			return true;
 		}
 		else {
 			pos = inRegister(parm[1], 1);
@@ -131,9 +164,11 @@ namespace regions {
 						setProperties(parm[j], &GRegister_Regions[pos]);
 					}
 				}
+				return true;
 			}
 			else {
 				std::cerr << "Region:" << parm[1] << " not found.\n";
+				return false;
 			}
 		}
 	}
@@ -142,12 +177,14 @@ namespace regions {
 		std::string ret;
 		ind size = GRegister_Regions.size();
 		if (size > 0) {
-			ret += "REGIONS:\n";
+			ret += std::to_string(size);
+			ret += " REGIONS:\n";
 			for (ind i = 0; i < size; ++i) {
 				ret += GRegister_Regions[i].name + "\t\tID:";
 				ret += GRegister_Regions[i].identifier + "\t\t";
-				if (GRegister_Regions[i].description != "")
-					ret += "DESC:" + GRegister_Regions[i].description + " ";
+				ret += "DIM:" + GRegister_Regions[i].dimension.value + "\t";
+				if (GRegister_Regions[i].description.exists)
+					ret += "DESC:" + GRegister_Regions[i].description.value + " ";
 				if (GRegister_Regions[i].conduction.exists)
 					ret += "COND:" + GRegister_Regions[i].conduction.value + " ";
 				if (GRegister_Regions[i].convection.exists)
@@ -156,16 +193,19 @@ namespace regions {
 					ret += "RAD:" + GRegister_Regions[i].radiation.value + " ";
 				if (GRegister_Regions[i].generation.exists)
 					ret += "GEN:" + GRegister_Regions[i].generation.value + " ";
-				if (GRegister_Regions[i].bcType1.exists)
-					ret += "BC1_TEMP:" + GRegister_Regions[i].bcType1.value + " ";
-				if (GRegister_Regions[i].bcType2.exists)
-					ret += "BC2_FLUX:" + GRegister_Regions[i].bcType2.value + " ";
+				if (GRegister_Regions[i].temperature.exists)
+					ret += "TEMP:" + GRegister_Regions[i].temperature.value + " ";
+				if (GRegister_Regions[i].heatflux.exists)
+					ret += "FLUX:" + GRegister_Regions[i].heatflux.value + " ";
 				if (GRegister_Regions[i].temp_disc.exists)
 					ret += "T_JUMP:" + GRegister_Regions[i].temp_disc.value + " ";
 				ret += "\n";
 			}
+			ret += "\n";
 		}
-		ret += "\n";
+		else {
+			ret = "0 Regions.\n";
+		}
 		return ret;
 	}
 
@@ -173,11 +213,12 @@ namespace regions {
 		std::string ret;
 		ind size = GRegister_GlobalRegions.size();
 		if (size > 0) {
-			ret += "GLOBAL REGIONS:\n";
+			ret += std::to_string(size);
+			ret += " GLOBAL_REGIONS:\n";
 			for (ind i = 0; i < size; ++i) {
 				ret += GRegister_GlobalRegions[i].name;
-				if (GRegister_GlobalRegions[i].description != "")
-					ret += "DESC:" + GRegister_GlobalRegions[i].description + " ";
+				if (GRegister_GlobalRegions[i].description.exists)
+					ret += "DESC:" + GRegister_GlobalRegions[i].description.value + " ";
 				ret += "\t\tREGIONS:";
 				for (ind j = 0; j < GRegister_GlobalRegions[i].regions.size(); ++j) {
 					ret += GRegister_GlobalRegions[i].regions[j]->name;
@@ -185,9 +226,30 @@ namespace regions {
 				}
 				ret += "\n";
 			}
+			ret += "\n";
 		}
-		ret += "\n";
+		else {
+			ret = "0 Global Regions.\n";
+		}
 		return ret;
+	}
+
+	std::string listAllRegions() {
+		std::string r = listRegions();
+		std::string gr = listGlobalRegions();
+		std::string s;
+		if (r.at(0) == '0') {
+			if (gr.at(0) == '0') {
+				s = "0 Regions/G_Regions.\n";
+			}
+			else {
+				s = r + gr;
+			}
+		}
+		else {
+			s = r + gr;
+		}
+		return s;
 	}
 
 	int inRegister(const std::string& rname, short int rType) {
@@ -204,6 +266,14 @@ namespace regions {
 					return static_cast<int>(i);
 				}
 			}
+		}
+		return (-1);
+	}
+
+	int inGRegion(const std::string& rgname, gregion* gr) {
+		for (int i = 0; i < gr->regions.size(); ++i) {
+			if (pstring::icompare(rgname, gr->regions[i]->name))
+				return i;
 		}
 		return (-1);
 	}
@@ -226,4 +296,6 @@ namespace regions {
 		}
 	}
 
-}
+
+
+}//end namespace regions

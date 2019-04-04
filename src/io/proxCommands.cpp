@@ -1,6 +1,7 @@
 #include "proxCommands.h"
 #include "proxStrings.h"
 #include "proxFiles.h"
+#include "proxGmsh.h"
 #include "../command.h"
 #include "../gobjects/gobject.h"
 
@@ -17,6 +18,9 @@ namespace command {
 			if (ctype != 1) {
 				switchcase(ctype, tmp);
 			}
+			else {
+				exit();
+			}
 			//COMMAND TOKEN TEST
 			/*
 			for (int i = 0; i < tmp.size(); ++i) {
@@ -25,6 +29,10 @@ namespace command {
 			*/
 		}
 		return ctype;
+	}
+
+	void exit() {
+		pgmsh::close();
 	}
 
 	int validate(const std::string& commType) {
@@ -52,7 +60,27 @@ namespace command {
 	}
 
 	void initialise() {
+		//Set gobject flags to defaults
 		gobject::initGFlags();
+		
+		//Set gmsh flags to defaults
+		pgmsh::init();
+
+		//Clear record file
+		pfile::clear(recordfilepath);
 	}
 
-}
+	int processArgV(int argc, char* argv[]) {
+		int ret = 0;
+		for (int i = 1; i < argc; ++i) {
+			if (process(argv[i]) == 0) {
+				if (execomm::loadfile(argv[i]) == 0) {
+					std::cerr << "argV[" << i << "]: " << argv[i] << " load failed.\n";
+					ret = 1;
+				}
+			}
+		}
+		return ret;
+	}
+
+}//end namespace command

@@ -1,4 +1,4 @@
-G_TAG HELP
+G_TAG general help: for specific HELP commands, use HELP [COM].
 Command List:
 -------------------------------------
 EXIT 		- exits application
@@ -7,7 +7,7 @@ SAVE 		- save current command
 CLCM		- clear current registers of stored entities
 LIST		- displays list of created entities
 
-Entity Creations:
+User Entity Creations:
 VAR			- create a new variable with specified value
 IVAR 		- create a new interactive variable with specified values
 RGN			- create a region with specified 
@@ -15,4 +15,7 @@ GROUP		- define a global region group of sub-regions
 SET			- add parameters to a region or global region group
 DEL			- delete a region or variable
 
+System Commands:
 COMPILE 	- create ASCII .pro file 
+GMSH		- interface with .geo files & gmsh interface
+GETDP		- interface with .pro files & getDP CLI

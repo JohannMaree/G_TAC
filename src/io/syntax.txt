@@ -2,14 +2,14 @@
 #2
 #3------------------------------------------------------------------------------------------------
 LOAD command: 
-loads a list of commands from an input file.
+loads a list of commands from an input file. 
 
-Syntax: LOAD [filename]
+Syntax: LOAD [/filename/]
 #4------------------------------------------------------------------------------------------------
 SAVE command:
 saves the list of current commands to a file.
 
-Syntax: SAVE [filename]
+Syntax: SAVE [/filename/]
 #5------------------------------------------------------------------------------------------------
 CLCM command:
 purges the registry of stored commands and variables.
@@ -19,8 +19,14 @@ Syntax: CLCM
 LIST command:
 displays a list of stored entities of specified type
 
-Syntax: LIST [entityType]
-where: entityType = VAR, IVAR, RGN, GRGN		  
+Syntax: LIST [/entityType/]
+where: entityType = VAR, IVAR, RGN, GRGN
+
+VAR: 	lists all variables (Type0)
+IVAR: 	lists all interactive variables (Type1,2,3)
+RGN:	lists all regions
+GRGN: 	lists all groups
+  
 #7------------------------------------------------------------------------------------------------
 VAR command:
 designates a variable with /name/ to store a numerical /value/.
@@ -82,13 +88,15 @@ Syntax: SET [/r_name/ -OR- /gr_name/] 	[/property/=numerical_value]
 										Regional Property Specifications:
 										
 										For a Thermal Conduction Zone:
-										[opt:COND=Conduction Constant(k)]
+										[opt:COND=Conduction Constant(W/(m.K))]
 										
 										For a Thermal Convection Zone:
-										[opt:CONV=Convection Constant(h)]
+										[opt:CONV=Convection Constant(W/(m^2.K)),
+											 TCONV=Convection Fluid Temperature (K)]
 										
 										For a Thermal Radiation Zone:
-										[opt:RAD=Surface Radiation Factor(ε)]
+										[opt:RAD=Surface Radiation Factor(ε),
+											 TRAD=Ambient Radiation Temperature (K)]
 										
 										For a Heat Generation Zone:
 										[opt:GEN=Heat Generated (W/m^2)]
@@ -108,5 +116,23 @@ DEL command:
 deletes a user created entity(variable,region,group) by name.
 
 Syntax: DEL [/entity_name/]
+#14-----------------------------------------------------------------------------------------------
+GMSH command:
+interfaces directly with GMSH application.
 
+Syntax: GMSH [/subcom/]
+where subcom = READ, LOAD, LIST, OPEN, CLEAR
 										
+				READ: reads and opens a geometry file (.geo)
+				LOAD: loads entities from an open geometry file
+				LIST: displays a list of entities in open geometry file
+				OPEN: interface window
+				CLEAR: closes and clears gmsh links
+#15-----------------------------------------------------------------------------------------------
+GETDP command:
+creates a getDP process within G_TAG.
+
+Syntax: GETDP [/subcom/] -OR- [/-args/]
+where subcom = LOAD
+				
+				LOAD: load a compiled analysis file to solve

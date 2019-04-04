@@ -14,10 +14,17 @@
 #include "../io/proxStrings.h"
 
 namespace gobject{
+
+	struct edouble {
+		double value;
+		std::string sval;
+	};
 	
 	//Global Variables
 	extern std::string sVarConduction;
 	extern std::string sGroupConduction;
+	extern std::string sVarNL_Conduction;
+	extern std::string sGroupNL_Conduction;
 
 	extern std::string sVarConvection;
 	extern std::string sVarConvTInf;
@@ -46,6 +53,18 @@ namespace gobject{
 	extern std::string charTdiscfile;
 	extern std::string charTcontfile;
 
+	extern std::string sVarNL_InitialRes;
+	extern std::string sVarNL_Res;
+	extern std::string sVarNL_Iter;
+	extern std::string sVarNL_eps;
+	extern std::string sVarNL_rel;
+	extern std::string sVarNL_maxloop;
+	extern std::string sVarNL_submenu;
+
+	extern edouble varNL_eps;
+	extern edouble varNL_rel;
+	extern int varNL_maxloop;
+
 	//Default Process Object Function Names
 	extern std::string charT;
 	extern std::string charQ;
@@ -57,10 +76,13 @@ namespace gobject{
 	extern std::string defNamePostOperation;
 	extern std::string defNamePostProcess;
 	extern std::string defNameResolution;
-	extern std::string defNameReSystem;
+	extern std::string defNameResSystem;
+	extern std::string defNameResNLSystem;
 	extern std::string defNameFormulation;
+	extern std::string defFormulationType;
 	extern std::string defFormEQType;
 	extern std::string defFunctionSpace;
+	extern std::string defBFName;
 	extern std::string defBasisFunction;
 
 	extern std::string TIntegration;
@@ -77,6 +99,8 @@ namespace gobject{
 	extern bool GFlagTemperature;
 	extern bool GFlagDiscontinuous;
 	extern bool GFlag3Dim;
+	extern bool GFlagNL_Conduction;
+
 	extern short int GFlagSysOrder;
 	extern short int GFlagBFunctions;
 
@@ -84,11 +108,12 @@ namespace gobject{
 	void initGFlags();
 	void clearGlobalArrays();
 
-}
+}//end namespace gobject
 
 //GetDP Object GLobal Array Definitions
 extern std::vector<std::string> GArr_Groups;
 extern std::vector<std::string> GArr_Functions;
+
 extern std::vector<gobject::Constraint> GArr_Constraints;
 extern std::vector<gobject::FunctionSpace> GArr_FunctionSpaces;
 extern std::vector<gobject::Jacobian> GArr_Jacobians;

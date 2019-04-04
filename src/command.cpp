@@ -1,6 +1,7 @@
 #include "command.h"
 #include "io/proxCommands.h"
 #include "io/proxFiles.h"
+#include "io/proxGmsh.h"
 #include "variable.h"
 #include "region.h"
 #include "compile.h"
@@ -29,11 +30,11 @@ namespace command {
 			execomm::list(comm);
 			break;
 		case 7:		//VAR command
-			if (variables::validate(comm, 1))
+			if (variables::validate(comm, 0))
 				execomm::addLogEntry(comm);
 			break;
 		case 8:		//IVAR command
-			if(variables::validate(comm,2))
+			if(variables::validate(comm,1))
 				execomm::addLogEntry(comm);
 			break;
 		case 9:		//RGN command
@@ -45,21 +46,31 @@ namespace command {
 				execomm::addLogEntry(comm);
 			break;
 		case 11:	//SET command
-			execomm::set(comm);
+			if (execomm::set(comm))
+				execomm::addLogEntry(comm);
 			break;
 		case 12:	//COMPILE command
-			compile::validate(comm);
+			if (compile::validate(comm))
+				execomm::addLogEntry(comm);
 			break;
-		case 13:
+		case 13:	//DEL command
 			execomm::del(comm);
 			break;
+		case 14:	//GMSH command
+			if(pgmsh::validate(comm))
+				execomm::addLogEntry(comm);
+			break;
+		case 15:	//GETDP command
+			if (pgmsh::runGetDP(comm))
+				execomm::addLogEntry(comm);
+			break;
+
 
 		default:
 			std::cerr << "command not recognised. use HELP for a list of available commands.\n";
 			break;
 		}
 	}
-}
 
-
+}//end namespace command
 

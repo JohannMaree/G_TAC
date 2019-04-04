@@ -5,7 +5,7 @@ namespace gobject {
 	int defaultFormulation(int posFSpace){
 		Formulation form;
 		form.Name = defNameFormulation;
-		form.Type = "FemEquation";
+		form.Type = defFormulationType;
 		
 		formQuantity fq;
 		fq.Name = charT;
@@ -73,6 +73,17 @@ namespace gobject {
 			hfEQ.JacobianName = TJacobianSur;
 			hfEQ.IntegrationName = TIntegration;
 			form.Equations.push_back(hfEQ);
+		}
+
+		if (GFlagNL_Conduction) {
+			//NonLinear Conduction EQ
+			formEquation ncondEQ;
+			ncondEQ.EQType = defFormEQType;
+			ncondEQ.PDE = sVarNL_Conduction + "[ {" + charT +"} ] * Dof{d " + charT + "} , {d " + charT + "}";
+			ncondEQ.DomainName = sGroupNL_Conduction;
+			ncondEQ.JacobianName = TJacobianVol;
+			ncondEQ.IntegrationName = TIntegration;
+			form.Equations.push_back(ncondEQ);
 		}
 		
 		return addFormulation(form);

@@ -8,7 +8,7 @@ namespace gobject {
 		fs.Type = "Form0";
 
 		fsBasisFunction bf;
-		bf.Name = "sN";
+		bf.Name = defBFName;
 		bf.NameOfCoef = defBasisFunction;
 		bf.Function = "BF_Node";
 		bf.Support = TDomain;
@@ -19,22 +19,14 @@ namespace gobject {
 			bf.Entity = "NodesOf[" + TDomain +"]";
 		}
 		fs.BasisFunctions.push_back(bf);
-
-		fsConstraint cs;
-		for (int i = 0; i < GArr_Constraints.size(); ++i) {
-			cs.NameOfCoef = defBasisFunction;
-			cs.EntityType = "NodesOf";
-			cs.NameOfConstraint = GArr_Constraints[i].Name;
-			fs.Constraints.push_back(cs);
-		}
-
+		
 		return addFunctionSpace(fs);
 	}
 
 	int addFunctionSpace(FunctionSpace& fs) {
 		int in = inArr_FunctionSpace(fs.Name);
 		if (in >= 0) {	//Add parameters to existing FunctionSpace
-			if (pstring::icompare(GArr_FunctionSpaces[in].Type, fs.Type)) {
+			if (pstring::icompare(GArr_FunctionSpaces[in].Type, fs.Type)) { //If same type of FS
 				for (ind i = 0; i < fs.BasisFunctions.size(); ++i) {
 					addToFunctionSpace(fs.BasisFunctions[i],in);
 				}
@@ -48,7 +40,7 @@ namespace gobject {
 					addToFunctionSpace(fs.GlobalQuantities[i], in);
 				}
 			}
-			else {
+			else {	//Types Dont Match, Make new functionSpace
 				FunctionSpace fsnew = fs;
 				fsnew.Name += "_" + fsnew.Type;
 				GArr_FunctionSpaces.push_back(fsnew);

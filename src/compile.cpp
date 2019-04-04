@@ -18,31 +18,66 @@ std::string groupGEN;
 std::string groupFLUX;
 std::string groupTEMP;
 std::string groupDISC;
+std::string groupNL_COND;
 
 std::string groupALL;
 
 namespace compile {
 
-	void validate(const std::vector<std::string>& parm) {
-		std::string fname = parm[1];
-		std::string fext = fname.substr(fname.length() - 4, 3);
-		//Ensure Extension is correct
-		if (pstring::icompare(fext, "pro")) {
-			defaults(fname);
+	bool validate(const std::vector<std::string>& parm) {
+		if (parm.size() > 1) {
+			//Ensure Extension is correct
+			std::string fname = parm[1];
+			if (pstring::checkExtension(fname, "pro")) {
+				defaults(fname);
+				return true;
+			}
+			else {
+				fname += ".pro";
+				defaults(fname);
+				return true;
+			}
 		}
 		else {
-			fname += ".pro";
-			defaults(fname);
+			std::cerr << "COMPILE error: Not enough parameters specified.\n";
+			return false;
+		}
+	}
+
+	void createNL_Variables(int type) {
+		std::vector <std::string> pass;
+		if (type == 0) {
+			pass.push_back("VAR");
+		}
+		else {
+			pass.push_back("IVAR");
+		}
+		pass.push_back("#PLACEHOLDER=#VALUE");
+		pass.push_back("MENU=" + gobject::sVarNL_submenu);
+
+		if (variables::inRegister(gobject::sVarNL_eps) < 0) {
+			pass[1] = gobject::sVarNL_eps + "=" + gobject::varNL_eps.sval;
+			variables::validate(pass, -1);
+		}
+		if (variables::inRegister(gobject::sVarNL_rel) < 0) {
+			pass[1] = gobject::sVarNL_rel + "=" + gobject::varNL_rel.sval;
+			variables::validate(pass, -1);
+		}
+		if (variables::inRegister(gobject::sVarNL_maxloop) < 0) {
+			pass[1] = gobject::sVarNL_maxloop + "=" + std::to_string(gobject::varNL_maxloop);
+			variables::validate(pass, -1);
 		}
 	}
 
 	void defaults(const std::string& filename) {
 
-		openGlobalGroups();
-		compileFromRegions();
-		closeGlobalGroups();
+		//Register System flags
+		regionPreCompile();
 
-		//Default Calls
+		//Open groups for additive info
+		openGlobalGroups();
+
+		//Default General Calls
 		int fsp = gobject::defaultFunctionSpace();
 		gobject::defaultJacobian();
 		gobject::defaultIntegration();
@@ -53,8 +88,19 @@ namespace compile {
 		int ppos = gobject::defaultPostProcessing(fpos);
 		gobject::defaultPostOperation(ppos);
 
+		//Conditional Calls
+		if (gobject::GFlagNL_Conduction) {
+			createNL_Variables();
+		}
+
+		//Specific Region Calls
+		compileFromRegions();
+
+		//Close open groups
+		closeGlobalGroups();
+
 		writeASCII(filename);
-		std::cout << "GENERATED FILE:" << filename << "\n";//TEST
+		std::cout << "FILE:" << filename << " generated succesfully.\n";
 	}
 
 	void writeASCII(const std::string& filename) {
@@ -81,9 +127,9 @@ namespace compile {
 
 	void compileFromRegions() {
 		for (ind i = 0; i < GRegister_Regions.size(); ++i) {
-			std::ostringstream def;
 
 			//Group Definition
+			std::ostringstream def;
 			def << GRegister_Regions[i].name << " = ";
 			def << "Region[" << GRegister_Regions[i].identifier << "]";
 			GArr_Groups.push_back(def.str());
@@ -106,16 +152,15 @@ namespace compile {
 			}
 
 			//Constraint Definitions
-			if (GRegister_Regions[i].bcType1.exists) {			//Dirichlet BoundaryCondition
-				rgnBCType1(GRegister_Regions[i]);
+			if (GRegister_Regions[i].temperature.exists) {		//Dirichlet Boundary Condition
+				rgnTemperature(GRegister_Regions[i]);
 			}
 
-			if (GRegister_Regions[i].bcType2.exists) {			//Neumann BoundaryCondition
-				rgnBCType2(GRegister_Regions[i]);
+			if (GRegister_Regions[i].heatflux.exists) {			//Neumann Boundary Condition
+				rgnHeatflux(GRegister_Regions[i]);
 			}
 
-			//Temperature Discontinuity
-			if (GRegister_Regions[i].temp_disc.exists) {		
+			if (GRegister_Regions[i].temp_disc.exists) {		//Temperature Discontinuity
 				rgnTempDisc(GRegister_Regions[i]);
 			}
 
@@ -123,16 +168,99 @@ namespace compile {
 
 	}
 
+	void regionPreCompile() {
+		for (ind i = 0; i < GRegister_Regions.size(); ++i) {
+
+			//Set GFlags for gobject generation
+			if (!gobject::GFlagConduction) {
+				if (GRegister_Regions[i].conduction.exists) {
+					gobject::GFlagConduction = true;
+				}
+			}
+			if (!gobject::GFlagConvection) {
+				if (GRegister_Regions[i].convection.exists) {
+					gobject::GFlagConvection = true;
+				}
+			}
+			if (!gobject::GFlagRadiation) {
+				if (GRegister_Regions[i].radiation.exists) {
+					gobject::GFlagRadiation = true;
+				}
+			}
+			if (!gobject::GFlagGeneration) {
+				if (GRegister_Regions[i].generation.exists) {
+					gobject::GFlagGeneration = true;
+				}
+			}
+			if (!gobject::GFlagTemperature) {
+				if (GRegister_Regions[i].temperature.exists) {
+					gobject::GFlagTemperature = true;
+				}
+			}
+			if (!gobject::GFlagHeatFlux) {
+				if (GRegister_Regions[i].heatflux.exists) {
+					gobject::GFlagHeatFlux = true;
+				}
+			}
+			if (!gobject::GFlagDiscontinuous) {
+				if (GRegister_Regions[i].temp_disc.exists) {
+					gobject::GFlagDiscontinuous = true;
+				}
+			}
+			if (!gobject::GFlagNL_Conduction) {
+				if (GRegister_Regions[i].conduction.exists) {
+					int in = variables::inRegister(GRegister_Regions[i].conduction.value);
+					if (in >= 0) {
+						if (GRegister_Variables[in]->type == -1) {
+							gobject::GFlagNL_Conduction = true;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	//Individual Entity Compilation Methods
 	void rgnConduction(regions::region& rgn) {
-		std::ostringstream func;
-		func << gobject::sVarConduction << "[";
-		func << rgn.name;
-		func << "] = ";
-		func << rgn.conduction.value;
-		GArr_Functions.push_back(func.str());
-		//Add region to conduction group
-		groupCOND += rgn.name + ",";
-		gobject::GFlagConduction = true;
+		std::string val = rgn.conduction.value;
+		int in = variables::inRegister(val);
+		if (in >= 0) {//If Value is VAR
+			std::ostringstream func;
+			if (GRegister_Variables[in]->type == -1) {// Pair Interpolation Type
+				func << gobject::sVarNL_Conduction << "[";
+				func << rgn.name;
+				func << "] = InterpolationLinear[$1]";
+				func << "{List[" << val << "]}";
+				GArr_Functions.push_back(func.str());
+
+
+				//Add region to NL conduction group
+				groupNL_COND += rgn.name + ",";
+			}
+			else {//Linear Type
+				func << gobject::sVarConduction << "[";
+				func << rgn.name;
+				func << "] = ";
+				func << val;
+				GArr_Functions.push_back(func.str());
+				//Add region to conduction group
+				groupCOND += rgn.name + ",";
+			}
+		}
+		else if (pstring::isNumber(val)) {//If Value is Number
+			std::ostringstream func;
+			func << gobject::sVarConduction << "[";
+			func << rgn.name;
+			func << "] = ";
+			func << val;
+			GArr_Functions.push_back(func.str());
+			//Add region to conduction group
+			groupCOND += rgn.name + ",";
+		}
+		else {
+			std::cerr << "COMPILE ERROR: COND VAL:" << val << ", RGN:" << rgn.name << " conduction value not valid.\n";
+		}
 	}
 
 	void rgnConvection(regions::region& rgn) {
@@ -142,9 +270,21 @@ namespace compile {
 		func << "] = ";
 		func << rgn.convection.value;
 		GArr_Functions.push_back(func.str());
+		
+		if (rgn.tconv.exists) {
+			func.str("");
+			func << gobject::sVarConvTInf << "[";
+			func << rgn.name;
+			func << "] = ";
+			func << rgn.tconv.value;
+			GArr_Functions.push_back(func.str());
+		}
+		else {
+			std::cerr << "COMPILE ERROR: CONV RGN:" << rgn.name << " missing TCONV value.\n";
+		}
+
 		//Add region to convection group
 		groupCONV += rgn.name + ",";
-		gobject::GFlagConvection = true;
 	}
 
 	void rgnRadiation(regions::region& rgn) {
@@ -154,9 +294,21 @@ namespace compile {
 		func << "] = ";
 		func << rgn.radiation.value;
 		GArr_Functions.push_back(func.str());
+
+		if (rgn.trad.exists) {
+			func.str("");
+			func << gobject::sVarRadTInf << "[";
+			func << rgn.name;
+			func << "] = ";
+			func << rgn.trad.value;
+			GArr_Functions.push_back(func.str());
+		}
+		else {
+			std::cerr << "COMPILE ERROR: RAD RGN:" << rgn.name << " missing TRAD value.\n";
+		}
+
 		//Add region to radiation group
 		groupRAD += rgn.name + ",";
-		gobject::GFlagRadiation = true;
 	}
 
 	void rgnGeneration(regions::region& rgn) {
@@ -168,10 +320,11 @@ namespace compile {
 		GArr_Functions.push_back(func.str());
 		//Add region to generation group
 		groupGEN += rgn.name + ",";
-		gobject::GFlagGeneration = true;
 	}
 
-	void rgnBCType1(regions::region& rgn) {
+	void rgnTemperature(regions::region& rgn) {
+		//Default to constraint addition
+
 		//Add BC Type 1 COnstraint
 		gobject::Constraint c;
 		c.Name = gobject::sVarTempConstraint;
@@ -179,24 +332,31 @@ namespace compile {
 
 		gobject::cCase cs;
 		cs.Region = rgn.name;
-		cs.Value = rgn.bcType1.value;
+		cs.Value = rgn.temperature.value;
 		c.Cases.push_back(cs);
 
 		gobject::addConstraint(c);
+		
+		//Add FunctionSpace Constraint
+		gobject::fsConstraint fsc;
+		fsc.NameOfCoef = gobject::defBasisFunction;
+		fsc.EntityType = "NodesOf";
+		fsc.NameOfConstraint = c.Name;
+
+		gobject::addToFunctionSpace(fsc);
+
 		//Add region to temp group
 		groupTEMP += rgn.name + ",";
-		gobject::GFlagTemperature = true;
 	}
 
-	void rgnBCType2(regions::region& rgn) {
+	void rgnHeatflux(regions::region& rgn) {
 		std::ostringstream func;
 		func << gobject::sVarHeatFlux << "[";
 		func << rgn.name << "] = ";
-		func << rgn.bcType2.value;
+		func << rgn.heatflux.value;
 		GArr_Functions.push_back(func.str());
 		//Add region to flux group
 		groupFLUX += rgn.name + ",";
-		gobject::GFlagHeatFlux = true;
 	}
 
 	void rgnTempDisc(regions::region& rgn) {
@@ -215,19 +375,20 @@ namespace compile {
 		//S2: Add FunctionSpace, BasisFunction & Subspace
 		gobject::FunctionSpace fs;
 		fs.Name = gobject::defFunctionSpace;
+		fs.Type = "Form0";
 
 		gobject::fsBasisFunction dbf;
-		dbf.Name = gobject::sBasisFunctionDisc;
+		dbf.Name = gobject::defBFName + "dc";
 		dbf.NameOfCoef = gobject::charTdisc;
 		dbf.Function = "BF_Node";
 		dbf.Support = gobject::sGroupDiscontinuous;
-		dbf.Entity = gobject::sGroupDiscontinuous;
+		dbf.Entity = "NodesOf[" + gobject::sGroupDiscontinuous + "]";
 		fs.BasisFunctions.push_back(dbf);
 
 		//S3: Divide Domain into Two Spaces; Continuous & Discontinuous
 		gobject::fsSubspace fsCon;
 		fsCon.Name = gobject::sSpaceTCont;
-		fsCon.NameOfBasisFunction = gobject::defBasisFunction;
+		fsCon.NameOfBasisFunction = gobject::defBFName;
 		fs.Subspaces.push_back(fsCon);
 
 		gobject::fsSubspace fsDiscon;
@@ -246,18 +407,19 @@ namespace compile {
 		//S4: Add Formulation
 		gobject::Formulation fm;
 		fm.Name = gobject::defNameFormulation;
-		
+		fm.Type = gobject::defFormulationType;
+
 		gobject::formQuantity fqc;
 		fqc.Name = gobject::charTcont;
 		fqc.Type = "Local";
-		fqc.NameOfSpace = gobject::TDomain + "[";
+		fqc.NameOfSpace = gobject::defFunctionSpace + "[";
 		fqc.NameOfSpace += gobject::sSpaceTCont + "]";
 		fm.Quantities.push_back(fqc);
 
 		gobject::formQuantity fqd;
 		fqd.Name = gobject::charTdisc;
 		fqd.Type = "Local";
-		fqd.NameOfSpace = gobject::TDomain + "[";
+		fqd.NameOfSpace = gobject::defFunctionSpace + "[";
 		fqd.NameOfSpace += gobject::sSpaceTDisc + "]";
 		fm.Quantities.push_back(fqd);
 
@@ -293,36 +455,47 @@ namespace compile {
 		poc.OperationType = "Print";
 		poc.OperationArgs.push_back(gobject::charTcont);
 		poc.OperationArgs.push_back("OnElementsOf " + gobject::TDomain);
-		poc.OperationArgs.push_back("File " + gobject::charTcontfile);
+		poc.OperationArgs.push_back("File \"" + gobject::charTcontfile + "\"");
 		po.Operations.push_back(poc);
 
 		gobject::postOp pod;
 		pod.OperationType = "Print";
 		pod.OperationArgs.push_back(gobject::charTdisc);
 		pod.OperationArgs.push_back("OnElementsOf " + gobject::sGroupDiscontinuous);
-		pod.OperationArgs.push_back("File " + gobject::charTdiscfile);
+		pod.OperationArgs.push_back("File \"" + gobject::charTdiscfile + "\"");
 		po.Operations.push_back(pod);
 
 		gobject::addPostOperation(po);
 
 		//Add region to Discon group
 		groupDISC += rgn.name + ",";
-		gobject::GFlagDiscontinuous = true;
 	}
 
+	//Region Group definitions
 	void openGlobalGroups() {
-		groupCOND = gobject::sGroupConduction + " = Region[{";
-		groupCONV = gobject::sGroupConvection + " = Region[{";
-		groupRAD = gobject::sGroupRadiation + " = Region[{";
-		groupGEN = gobject::sGroupGeneration + " = Region[{";
-		groupFLUX = gobject::sGroupHeatFlux + " = Region[{";
-		groupTEMP = gobject::sGroupTemperature + " = Region[{";
-		groupDISC = gobject::sGroupDiscontinuous + " = Region[{";
+		//Establish System Flags
+		if(gobject::GFlagConduction)
+			groupCOND = gobject::sGroupConduction + " = Region[{";
+		if (gobject::GFlagConvection)
+			groupCONV = gobject::sGroupConvection + " = Region[{";
+		if (gobject::GFlagRadiation)
+			groupRAD = gobject::sGroupRadiation + " = Region[{";
+		if (gobject::GFlagGeneration)
+			groupGEN = gobject::sGroupGeneration + " = Region[{";
+		if (gobject::GFlagHeatFlux)
+			groupFLUX = gobject::sGroupHeatFlux + " = Region[{";
+		if (gobject::GFlagTemperature)
+			groupTEMP = gobject::sGroupTemperature + " = Region[{";
+		if (gobject::GFlagDiscontinuous)
+			groupDISC = gobject::sGroupDiscontinuous + " = Region[{";
+		if (gobject::GFlagNL_Conduction)
+			groupNL_COND = gobject::sGroupNL_Conduction + " = Region[{";
 
 		groupALL = gobject::TDomain + " = Region[{";
 	}
 
 	void closeGlobalGroups() {
+		GArr_Groups.push_back("");
 
 		if (gobject::GFlagConduction) {
 			groupCOND.pop_back();
@@ -372,7 +545,13 @@ namespace compile {
 
 			GArr_Groups.push_back(groupDISC);
 			groupALL += gobject::sGroupDiscontinuous + ",";
+		}
+		if (gobject::GFlagNL_Conduction) {
+			groupNL_COND.pop_back();
+			groupNL_COND += "}]";
 
+			GArr_Groups.push_back(groupNL_COND);
+			groupALL += gobject::sGroupNL_Conduction + ",";
 		}
 
 		groupALL.pop_back();
@@ -380,4 +559,4 @@ namespace compile {
 		GArr_Groups.push_back(groupALL);
 	}
 
-}
+}//end namespace compile

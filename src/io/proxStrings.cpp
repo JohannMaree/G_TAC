@@ -105,4 +105,18 @@ namespace pstring {
 		}
 	}
 
-}
+	bool checkExtension(const std::string& filename, const std::string& ext) {
+		std::string fext = filename.substr(filename.find_last_of('.') + 1);
+		return icompare(fext,ext);
+	}
+
+	bool isNumber(const std::string& str) {
+		if (str.empty()) {
+			return false;
+		}
+		else {
+			return (str.find_first_not_of("0123456789+/-.") == std::string::npos);
+		}
+	}
+
+}//end namespace pstring
