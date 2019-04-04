@@ -1,4 +1,3 @@
-#include "Formulation.h"
 #include "gobject.h"
 
 namespace gobject {
@@ -6,7 +5,7 @@ namespace gobject {
 	int defaultFormulation(int posFSpace){
 		Formulation form;
 		form.Name = defNameFormulation;
-		form.Type = "FemEquation";
+		form.Type = defFormulationType;
 		
 		formQuantity fq;
 		fq.Name = charT;
@@ -75,9 +74,59 @@ namespace gobject {
 			hfEQ.IntegrationName = TIntegration;
 			form.Equations.push_back(hfEQ);
 		}
+
+		if (GFlagNL_Conduction) {
+			//NonLinear Conduction EQ
+			formEquation ncondEQ;
+			ncondEQ.EQType = defFormEQType;
+			ncondEQ.PDE = sVarNL_Conduction + "[ {" + charT +"} ] * Dof{d " + charT + "} , {d " + charT + "}";
+			ncondEQ.DomainName = sGroupNL_Conduction;
+			ncondEQ.JacobianName = TJacobianVol;
+			ncondEQ.IntegrationName = TIntegration;
+			form.Equations.push_back(ncondEQ);
+		}
 		
-		GArr_Formulations.push_back(form);
-		return static_cast<int>(GArr_Formulations.size() - 1);
+		return addFormulation(form);
+	}
+
+	int addFormulation(Formulation& f) {
+		int in = inArr_Formulation(f.Name);
+		if (in >= 0) {	//Add parameters to existing Formulation
+			for (ind i = 0; i < f.Quantities.size(); ++i) {
+				addToFormulation(f.Quantities[i],in);
+			}
+			for (ind i = 0; i < f.Equations.size(); ++i) {
+				addToFormulation(f.Equations[i], in);
+			}
+			for (ind i = 0; i < f.Globals.size(); ++i) {
+				addToFormulation(f.Globals[i], in);
+			}
+			return in;
+		}
+		else {			//Create new Formulation
+			GArr_Formulations.emplace_back(f);
+			return 0;
+		}
+	}
+
+	int inArr_Formulation(std::string& compareName) {
+		for (int i = 0; i < GArr_Formulations.size(); ++i) {
+			if (pstring::icompare(GArr_Formulations[i].Name, compareName))
+				return i;
+		}
+		return (-1);
+	}
+
+	void addToFormulation(formQuantity& fq, int fpos) {
+		GArr_Formulations[fpos].Quantities.emplace_back(fq);
+	}
+
+	void addToFormulation(formEquation& fe, int fpos) {
+		GArr_Formulations[fpos].Equations.emplace_back(fe);
+	}
+
+	void addToFormulation(formGlobal& fg, int fpos) {
+		GArr_Formulations[fpos].Globals.emplace_back(fg);
 	}
 
 }

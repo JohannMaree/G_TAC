@@ -1,6 +1,6 @@
-
 Include "common.pro";
 
+//{ CREATE QUADRAHEDRON 
 Function Create_Quad
 
   p1=newp; Point(newp)={_xC,_yC,_zC,_lc};
@@ -15,10 +15,11 @@ Function Create_Quad
 
   lines[] = {l1, l2, l3, l4};
   ll=newll; Curve Loop(ll) = {lines[]};
-  ss=news; Plane Surface(news) = {ll};
 
 Return
+//}
 
+//{ CREATE HEXAHEDRON
 Function Create_Hex
 
   p1=newp; Point(newp)={_xC,_yC,_zC,_lc};
@@ -69,8 +70,56 @@ Function Create_Hex
   v=newv; Volume(newv) = {sl};
 
 Return
+//}
 
-If(!Fl_Dimension)    //2D
+If(!Fl_Dimension3)    //2D
+//Create entities from smallest to largest
+
+  Xcenter=X1/2;
+  Ycenter=Y1/2;
+
+  //Inner Quad 
+  _xC = Xcenter - (X2/2);
+  _yC = Ycenter - (Y2/2);
+  _zC = 0;
+  _xL = X2;
+  _yL = Y2;
+  _lc = Lc2;
+  Call Create_Quad;
+  
+  ss=news; 
+  Plane Surface(news) = {ll};
+  sRec2 = ss;
+  llrec2 = lines[];
+  ll2 = ll;
+
+  //Wireframe
+  pW1=newp; Point(newp)={_xC - WW - WS, _yC - WW - WS,0,LcW};
+  pW2=newp; Point(newp)={_xC - WW - WS, _yC + Y2 + WS,0,LcW};
+  pW3=newp; Point(newp)={_xC - WS, _yC + Y2 + WS,0,LcW};
+  pW4=newp; Point(newp)={_xC - WS, _yC - WS,0,LcW};
+  
+  pW5=newp; Point(newp)={_xC + WS + X2, _yC - WS,0,LcW};
+  pW6=newp; Point(newp)={_xC + WS + X2, _yC + Y2 + WS,0,LcW};
+  pW7=newp; Point(newp)={_xC + WW + WS + X2, _yC + Y2 + WS,0,LcW};
+  pW8=newp; Point(newp)={_xC + WW + WS + X2, _yC - WW - WS,0,LcW};
+  
+  lw1=newl; Line(newl) = {pW1,pW2};
+  lw2=newl; Line(newl) = {pW2,pW3};
+  lw3=newl; Line(newl) = {pW3,pW4};
+  lw4=newl; Line(newl) = {pW4,pW5};
+  lw5=newl; Line(newl) = {pW5,pW6};
+  lw6=newl; Line(newl) = {pW6,pW7};
+  lw7=newl; Line(newl) = {pW7,pW8};
+  lw8=newl; Line(newl) = {pW8,pW1};
+  
+  wlines[] = {lw1,lw2,lw3,lw4,lw5,lw6,lw7,lw8};
+  lW = newll;
+  Curve Loop(lW) = {wlines[]};
+  ssW = news;
+  Plane Surface(news) = {lW};
+  
+  //Outer Quad
   _xC = 0;
   _yC = 0;
   _zC = 0;
@@ -78,60 +127,21 @@ If(!Fl_Dimension)    //2D
   _yL = Y1;
   _lc = Lc1;
   Call Create_Quad;
-  sRec1 = ss;
-  lRec1R = l2;
 
-/*  _xC = -X2;
-  _yC = 0;
-  _zC = 0;
-  _xL = X2;
-  _yL = Y1;
-  _lc = Lc2;
-  Call Create_Quad;
-  sRec2 = ss;
-  lRec2L = l4; */
+  llRec1 = lines[];
+  ssN = news;
+  Plane Surface(news) = {ll, -lW, -ll2};
+  sRec1N = ssN;
 
-  p5=newp; Point(newp)={-X2,0,0,Lc2};
-  p6=newp; Point(newp)={-X2,Y1,0,Lc2};
-  l5=newl; Line(newl)={p5,p1};
-  l6=newl; Line(newl)={p4,p6};
-  l7=newl; Line(newl)={p6,p5};
-  lines2[]={l5,-l4,l6,l7};
-  ll2=newll; Curve Loop(ll2) = {lines2[]};
-  sRec2=news; Plane Surface(news) = {ll2};
-  lRec2L=l7;
-
-  Physical Line("R1",100) = {lRec1R};
-  Physical Line("L2",101) = {lRec2L};
-  Physical Surface("Rec1",1000) = {sRec1};
+  Physical Line("bound1",100) = {llRec1[]};
+  Physical Line("bound2",101) = {llrec2[]};
+  Physical Line("boundW",102) = {wlines[]};
+  
+  Physical Surface("Rec1",1000) = {sRec1N};
   Physical Surface("Rec2",1001) = {sRec2};
+  Physical Surface("Wire",1002) = {ssW};
 
 Else                //3D
-  _xC = 0;
-  _yC = 0;
-  _zC = 0;
-  _xL = X1;
-  _yL = Y1;
-  _zL = H1;
-  _lc = Lc1;
-  Call Create_Hex;
-  f1_4 = s4;
-  v1 = v;
-
-  _xC = -X2;
-  _yC = 0;
-  _zC = 0;
-  _xL = X2;
-  _yL = Y1;
-  _zL = H1;
-  _lc = Lc2;
-  Call Create_Hex;
-  f2_6 = s6;
-  v2 = v;
-
-  Physical Surface("R1",100) = {f1_4};
-  Physical Surface("L2",101) = {f2_6};
-  Physical Volume("Hex1",1000) = {v1};
-  Physical Volume("Hex2",1001) = {v2};
+  
 
 EndIf

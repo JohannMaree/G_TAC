@@ -1,5 +1,4 @@
 #include "gobject.h"
-#include "proxStrings.h"
 
 #include <sstream>
 
@@ -19,12 +18,19 @@ namespace gobject {
 
 	//GetDP Constant Term definitions
 
+	//Constant Quantity Definitions
+	std::string charT = "T";
+	std::string charQ = "q";
+	std::string charQgen = "Qgen";
+
 	//Conduction
-	std::string sVarConduction = "conK";
+	std::string sVarConduction = "condK";
 	std::string sGroupConduction = "Cond_Elements";
+	std::string sVarNL_Conduction = "NL_condK";
+	std::string sGroupNL_Conduction = "NL_Cond_Elements";
 
 	//Convection
-	std::string sVarConvection = "conH";
+	std::string sVarConvection = "convH";
 	std::string sVarConvTInf = "TinfConv";
 	std::string sGroupConvection = "Conv_Elements";
 
@@ -45,24 +51,52 @@ namespace gobject {
 	std::string sVarTempConstraint = "Type1BC";
 	std::string sGroupTemperature = "Temp_Elements";
 
-	//Constant Quantity Definitions
-	std::string charT = "T";
-	std::string charQ = "q";
-	std::string charQgen = "Qgen";
+	//Temperature Discontinuity
+	std::string sVarTempDiscontinuity = "T_Disc";
+	std::string sGroupDiscontinuous = "Disc_Elements";
+
+	std::string sSpaceTCont = "T_Continuous";
+	std::string sSpaceTDisc = "T_Discontinous";
+	std::string sBasisFunctionDisc = charT + "_disc";
+
+	std::string charTdisc = charT + "dc";
+	std::string charTcont = charT + "cn";
+
+	std::string charTdiscfile = charTdisc + "_map.pos";
+	std::string charTcontfile = charTcont + "_map.pos";
+	
+	//NonLinear Iteration
+	std::string sVarNL_InitialRes = "res0";
+	std::string sVarNL_Res = "res";
+	std::string sVarNL_Iter = "iT";
+	
+	std::string sVarNL_eps = "NL_eps";
+	std::string sVarNL_rel = "NL_rel";
+	std::string sVarNL_maxloop = "NL_loop";
+
+	std::string sVarNL_submenu = "NL_Iteration";
+
+	edouble varNL_eps;
+	edouble varNL_rel;
+	int varNL_maxloop;
 
 	//Output File Names
-	std::string charTfile = "T_map.pos";
-	std::string charQfile = "q_map.pos";
+	std::string charTfile = charT + "_map.pos";
+	std::string charQfile = charQ + "_map.pos";
 
 
 	//GetDP Default Process Object Names
 	std::string defNamePostOperation = "def_HeatMap";
 	std::string defNamePostProcess = "def_Thermals";
 	std::string defNameResolution = "def_ThermalRes";
-	std::string defNameReSystem = "def_System";
+	std::string defNameResSystem = "def_System";
+	std::string defNameResNLSystem = "def_NL_System";
 	std::string defNameFormulation = "def_ThermalForm";
+	std::string defFormulationType = "FemEquation";
 	std::string defFormEQType = "Integral";
-	std::string defFSpace = "Hgrad_Tspace";
+	std::string defFunctionSpace = "Hgrad_Tspace";
+	std::string defBFName = "sN";
+	std::string defBasisFunction = charT + "_Node";
 
 	std::string TIntegration = "Integra";
 	std::string TJacobianVol = "Volume";
@@ -76,11 +110,14 @@ namespace gobject {
 	bool GFlagGeneration;
 	bool GFlagHeatFlux;
 	bool GFlagTemperature;
+	bool GFlagDiscontinuous;
 	bool GFlag3Dim;
+	bool GFlagNL_Conduction;
 	short int GFlagSysOrder;
 	short int GFlagBFunctions;
 
 	void initGFlags() {
+
 		//Heat Transfer Mechanisms
 		GFlagConduction = false;
 		GFlagConvection = false;
@@ -88,11 +125,20 @@ namespace gobject {
 		GFlagGeneration = false;
 		GFlagHeatFlux = false;
 		GFlagTemperature = false;
+		GFlagDiscontinuous = false;
+		GFlagNL_Conduction = false;
 
 		//Geometry Mechanisms
 		GFlag3Dim = false;
 		GFlagSysOrder = 1;
 		GFlagBFunctions = 1;
+
+		//NonLinear Iteration Terms
+		varNL_eps.value = 1e-9;
+		varNL_eps.sval = "1e-9";
+		varNL_rel.value = 1e-9;
+		varNL_rel.sval = "1e-9";
+		varNL_maxloop = 30;
 
 	}
 
@@ -109,5 +155,5 @@ namespace gobject {
 		GArr_PostOperations.clear();
 	}
 
-}
+}//end namespace gobject
 

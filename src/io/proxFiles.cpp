@@ -1,14 +1,12 @@
 #include "proxFiles.h"
 #include "proxCommands.h"
+#include "proxStrings.h"
 
 #include <iostream>
 #include <fstream>
+#include <Windows.h>
 
 namespace pfile {
-
-	void log(const std::string& logtext) {
-		write(recordfilepath, logtext);
-	}
 
 	bool write(const std::string& fileName, std::string text) {
 		std::ofstream fo(fileName, std::ios::app);
@@ -21,11 +19,13 @@ namespace pfile {
 		}
 	}
 
-	void copy(const std::string& src, const std::string& copy) {
+	bool copy(const std::string& src, const std::string& copy) {
 		std::ifstream in(src);
 		std::ofstream co(copy);
-
+		if (co.fail())
+			return false;
 		co << in.rdbuf();
+		return true;
 	}
 
 	void clear(const std::string& fname) {
@@ -33,9 +33,47 @@ namespace pfile {
 		out.close();
 	}
 
-}
+	int run(const std::string& exepath, std::string args) {
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		if (CreateProcess(exepath.c_str(), &args[0], NULL, NULL, false, 0, NULL, NULL, &si, &pi)) {
+			std::cout << "RUN:" << exepath << "\n" << std::endl;
+			return 0;
+		}
+		else {
+			int ierr = GetLastError();
+			std::cout << "ERROR RUN:" << ierr << ", RUN:" << exepath << "\n";
+			return ierr;
+		}
+
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+		std::cout << "getDP_exit.\n";
+	}
+
+}//end namespace pfile
 
 namespace execomm {
+
+	void addLogEntry(const std::vector<std::string>& logComm) {
+		std::string add;
+		for (ind i = 0; i < logComm.size(); ++i) {
+			add += (recordfilepath, logComm[i]);
+			add += " ";
+		}
+		add.pop_back();
+		addLogEntry(add);
+	}
+
+	void addLogEntry(const std::string& logtext) {
+		pfile::write(recordfilepath, logtext);
+	}
 
 	int loadfile(const std::string& filename) {
 		std::ifstream fl(filename);
@@ -46,6 +84,7 @@ namespace execomm {
 				com = command::process(line);
 			}
 			std::cout << "FILE:" << filename << " loaded.\n"; //TEST
+			addLogEntry("");
 			return com;
 		}
 		else {
@@ -97,7 +136,8 @@ namespace execomm {
 		}
 	}
 
-}
+
+}//end namespace execomm
 
 
 

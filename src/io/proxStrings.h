@@ -14,5 +14,7 @@ namespace pstring {
 	void removePreWhitespace(std::string* str, const std::string& ws = " \t");
 	void removePostWhitespace(std::string* str, const std::string& ws = " \t");
 	void condenseWhitespace(std::string* str, const std::string& ws = " \t", char delim = ' ');
+	bool checkExtension(const std::string& filename, const std::string& ext);
+	bool isNumber(const std::string& str);
 
-}
+}//end namespace pstring

@@ -17,7 +17,7 @@ namespace gobject {
 		std::vector<cCase> Cases;
 	};
 
-	void addConstraint(Constraint& con);
+	int addConstraint(Constraint& con);
 	int inArr_Constraint(std::string& compareName);
-
+	void addToConstraint(cCase& conCase, int cpos = 0);
 }

@@ -1,12 +1,15 @@
-#include "proxCommands.h"
+#include "io/proxCommands.h"
 #include <iostream>
 #include <string>
+
+
 
 int main(int argc, char *argv[]) {
 	std::cout << argv[0] << std::endl; //TEST
 	command::initialise();
-	if (argc>1) {	//File input
-		
+	int ret = 1;
+	if (argc>1) {	//argv input
+		ret = command::processArgV(argc, argv);
 	}
 	else {			//User Command TUI
 		bool exit = false;
@@ -17,8 +20,9 @@ int main(int argc, char *argv[]) {
 			pro = command::process(inputtext);
 			if (pro == 1) {
 				exit = true;
+				ret = 0;
 			}
 		}
 	}
-	return 0;
+	return ret;
 }

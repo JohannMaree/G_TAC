@@ -1,8 +1,8 @@
 #include "generate.h"
-#include "proxFiles.h"
-#include "proxStrings.h"
+#include "io/proxFiles.h"
+#include "io/proxStrings.h"
 #include "variable.h"
-#include "gobject.h"
+#include "gobjects/gobject.h"
 #include "compile.h"
 
 #include <sstream>
@@ -14,9 +14,14 @@ namespace generate {
 		ind s = GRegister_Variables.size();
 		std::ostringstream ss;
 		for (ind i = 0; i < s; ++i) {
-			if (GRegister_Variables[i]->type > 0) {
+
+			if (GRegister_Variables[i]->type == 0) {
+				variables::variable* v = (GRegister_Variables[i].get());
+				ss << v->name << " = " << v->value << ";\n";
+			}
+			else if (GRegister_Variables[i]->type == 1) {//Type 1: Basic Interface Type
 				variables::ivariable* v = static_cast<variables::ivariable*>(GRegister_Variables[i].get());
-				ss << v->name << " = DefineNumber["; //Type 1
+				ss << v->name << " = DefineNumber[";
 				ss << v->value << ", ";
 				if (v->menu.exists) {
 					ss << "Name \"" << v->menu.value << "/" << v->description.value << "_" << v->name << "\",";
@@ -25,30 +30,59 @@ namespace generate {
 					ss << "Name \"" << v->description.value << "\",";
 				}
 				ss << " Label \"" << v->name << "\"";
-				if (v->type == 2) {			//Type 2: Bounded Type
-					if (v->bounds.max.exists) {
-						ss << ", MAX " << v->bounds.max.value;
-					}
-					if (v->bounds.min.exists) {
-						ss << ", MIN " << v->bounds.min.value;
-					}
-					if (v->bounds.step.exists) {
-						ss << ", STEP " << v->bounds.step.value;
-					}
+				ss << "];\n";
+			}
+			else if (GRegister_Variables[i]->type == 2) {//Type 2: Bounded Type
+				variables::ivariable* v = static_cast<variables::ivariable*>(GRegister_Variables[i].get());
+				ss << v->name << " = DefineNumber[";
+				ss << v->value << ", ";
+				if (v->menu.exists) {
+					ss << "Name \"" << v->menu.value << "/" << v->description.value << "_" << v->name << "\",";
 				}
-				else if (v->type == 3) {	//Type 3:Choice Type
-					ss << ", CHOICES{";
-					for (ind j = 0; j < v->choices.size(); ++j) {
-						ss << v->choices[j] << ",";
-					}
-					ss << "}";
+				else {
+					ss << "Name \"" << v->description.value << "\",";
+				}
+				ss << " Label \"" << v->name << "\"";
+				if (v->bounds.max.exists) {
+					ss << ", MAX " << v->bounds.max.value;
+				}
+				if (v->bounds.min.exists) {
+					ss << ", MIN " << v->bounds.min.value;
+				}
+				if (v->bounds.step.exists) {
+					ss << ", STEP " << v->bounds.step.value;
 				}
 				ss << "];\n";
 			}
-			else {
-				variables::variable* v = static_cast<variables::variable*>(GRegister_Variables[i].get());
-				ss << v->name << " = " << v->value << ";\n";
+			else if (GRegister_Variables[i]->type == 3) {//Type 3:Choice Type
+				variables::ivariable* v = static_cast<variables::ivariable*>(GRegister_Variables[i].get());
+				ss << v->name << " = DefineNumber[";
+				ss << v->value << ", ";
+				if (v->menu.exists) {
+					ss << "Name \"" << v->menu.value << "/" << v->description.value << "_" << v->name << "\",";
+				}
+				else {
+					ss << "Name \"" << v->description.value << "\",";
+				}
+				ss << " Label \"" << v->name << "\"";
+				ss << ", CHOICES{";
+				for (ind j = 0; j < v->choices.size(); ++j) {
+					ss << v->choices[j] << ",";
+				}
+				ss << "}";
+				ss << "];\n";
 			}
+			else if (GRegister_Variables[i]->type == -1) {//Type 4:Pairs List Type
+				variables::cvariable* v = static_cast<variables::cvariable*>(GRegister_Variables[i].get());
+				ss << v->name << " = {";
+				for (ind i = 0; i < v->spairs.size(); ++i) {
+					ss << v->spairs[i].one << ", " << v->spairs[i].two;
+					ss << ",\n\t\t";
+				}
+				ss.seekp(-4, ss.cur);
+				ss << "};\n";
+			}
+
 		}
 		ss << "\n" << std::endl;
 		return ss.str();
@@ -59,7 +93,12 @@ namespace generate {
 		std::stringstream ss;
 		ss << "Group {\n";
 		for (ind i = 0; i < GArr_Groups.size(); ++i) {
-			ss << "\t" << GArr_Groups[i] << ";\n";
+			if (!GArr_Groups[i].empty()) {
+				ss << "\t" << GArr_Groups[i] << ";\n";
+			}
+			else {
+				ss << "\n";
+			}
 		}
 		ss << "}\n" << std::endl;
 		return ss.str();
@@ -105,29 +144,56 @@ namespace generate {
 			gobject::FunctionSpace* fs = &(GArr_FunctionSpaces[i]);
 
 			ss << "\t{ Name " << fs->Name << "; Type " << fs->Type << ";\n";
+			ss << "\t\tBasisFunction {\n";
 			for (ind j = 0; j < fs->BasisFunctions.size(); ++j) {
-				gobject::fsBasisFunction* fsbf = &(fs->BasisFunctions[j]);
-
-				ss << "\t\tBasisFunction {\n";
-				ss << "\t\t\t{ Name " << fsbf->Name << "; ";
-				ss << "NameOfCoef " << fsbf->NameOfCoef << "; ";
-				ss << "Function " << fsbf->Function << "; ";
-				ss << "Support " << fsbf->Support << "; ";
-				ss << "Entity " << fsbf->Entity << "; ";
+				ss << "\t\t\t{ Name " << fs->BasisFunctions[j].Name << "; ";
+				ss << "NameOfCoef " << fs->BasisFunctions[j].NameOfCoef << "; ";
+				ss << "Function " << fs->BasisFunctions[j].Function << "; ";
+				ss << "Support " << fs->BasisFunctions[j].Support << "; ";
+				ss << "Entity " << fs->BasisFunctions[j].Entity << "; ";
 				ss << "}\n";
-				ss << "\t\t}\n";
  			}
-			for (ind j = 0; j < fs->Constraints.size(); ++j) {
-				gobject::fsConstraint* fscs = &(fs->Constraints[j]);
+			ss << "\t\t}\n";
 
+			if (fs->Subspaces.size() > 0) {			//If Subspaces exist
+				ss << "\t\tSubSpace {\n";
+				for (ind j = 0; j < fs->Subspaces.size(); ++j) {
+					ss << "\t\t\t{ Name ";
+					ss << fs->Subspaces[j].Name << "; ";
+					ss << "NameOfBasisFunction {";
+					ss << fs->Subspaces[j].NameOfBasisFunction << "}; ";
+					ss << "}\n";
+				}
+				ss << "\t\t}\n";
+			}
+
+			if (fs->GlobalQuantities.size() > 0) {	//If GlobalQuantities exist
+				ss << "\t\tGlobalQuantity {\n";
+				for (ind j = 0; j < fs->GlobalQuantities.size(); ++j) {
+					ss << "\t\t\t{ Name ";
+					ss << fs->GlobalQuantities[j].Name << "; ";
+					ss << "Type ";
+					ss << fs->GlobalQuantities[j].Type << "; ";
+					ss << "NameOfCoef ";
+					ss << fs->GlobalQuantities[j].NameOfCoef << "; ";
+					ss << "}\n";
+				}
+				ss << "\t\t}\n";
+			}
+
+			if (fs->Constraints.size() > 0) {		//If Constraints exist
 				ss << "\t\tConstraint {\n";
-				ss << "\t\t\t{ NameOfCoef " << fscs->NameOfCoef << "; ";
-				ss << "EntityType " << fscs->EntityType << "; ";
-				ss << "NameOfConstraint " << fscs->NameOfConstraint << "; ";
-				ss << "}\n";
+				for (ind j = 0; j < fs->Constraints.size(); ++j) {
+					ss << "\t\t\t{ NameOfCoef " << fs->Constraints[j].NameOfCoef << "; ";
+					ss << "EntityType " << fs->Constraints[j].EntityType << "; ";
+					ss << "NameOfConstraint " << fs->Constraints[j].NameOfConstraint << "; ";
+					ss << "}\n";
+					
+				}
 				ss << "\t\t}\n";
 			}
 			ss << "\t}\n";
+			
 		}
 		ss << "}\n" << std::endl;
 		return ss.str();
@@ -171,7 +237,16 @@ namespace generate {
 				for (ind k = 0; k < ic->geoCases.size(); ++k) {
 					gobject::geoCase* geo = &(ic->geoCases[k]);
 
-					ss << "\t\t\t\t\t{ GeoElement " << geo->GeoElement << ";\t\t";
+					ss << "\t\t\t\t\t{ GeoElement " << geo->GeoElement << ";";
+					if (geo->GeoElement.length() > 8) {
+						ss << "\t";
+					}
+					else if (geo->GeoElement.length() > 6) {
+						ss << "\t\t";
+					}
+					else {
+						ss << "\t\t\t";
+					}
 					ss << "NumberOfPoints " << geo->NumberOfPoints << "; }\n";
 				}
 				ss << "\t\t\t\t}\n";
@@ -211,6 +286,14 @@ namespace generate {
 				ss << "Integration " << fe->IntegrationName << "; ";
 				ss << "}\n";
 			}
+			if (f->Globals.size() > 0) {	//If formulation Globals exist
+				for (ind j = 0; j < f->Globals.size(); ++j) {
+					ss << "\t\t\t" << f->Globals[j].GEQType << "{";
+					ss << "[" << f->Globals[j].GEquation << "];";
+					ss << "In " << f->Globals[j].DomainName << ";";
+					ss << "}\n";
+				}
+			}
 			ss << "\t\t}\n";
 		}
 		ss << "\t}\n";
@@ -235,7 +318,16 @@ namespace generate {
 
 				ss << "\t\tOperation {\n";
 				for (ind k = 0; k < sys->Operations.size(); ++k) {
-					ss << "\t\t\t" << sys->Operations[k] << ";\n";
+					std::string top = sys->Operations[k];
+					if (top.empty()) {
+						ss << "\n";
+					}
+					else if (top.back() == '{' || top.back() == '}') {
+						ss << "\t\t\t" << top << "\n";
+					}
+					else {
+						ss << "\t\t\t" << top << ";\n";
+					}
 				}
 				ss << "\t\t}\n";
 			}

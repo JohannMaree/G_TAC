@@ -1,18 +1,22 @@
-IVAR kR=100 	DESC=ThermCondCoeffRight 		MENU=Analysis MAX=600
-IVAR kL=20 	DESC=ThermCondCoeffLeft 		MENU=Analysis MAX=100
-IVAR h=25 	DESC=ThermalConvectionCoefficient 	MENU=Analysis
-IVAR TINF=80 	DESC=InfiniteConvectionTemperature 	MENU=Analysis
-IVAR Tfix=40 	DESC=FixedTemperature 			MENU=Analysis
-IVAR Qflux=60 	DESC=HeatFlux 				MENU=Analysis
+IVAR kO=100 	DESC=K_Outer	MENU=Analysis MAX=600 MIN=0
+IVAR kI=200 	DESC=K_Inner	MENU=Analysis MAX=1000 MIN=0 STEP=2
+IVAR kW=800		DESC=K_Wire		MENU=Analysis MAX=1000 MIN=0 STEP=4
 
-RGN RECR=1000 	DESC=RectangleRight 	COND=kL
-RGN RECL=1001 	DESC=RectangleLeft 	COND=kR
-RGN R1=100 	DESC=sideFixedTemp 	TEMP=Tfix
-RGN L1=101 	DESC=sideHeatFlux 	FLUX=Qflux
+IVAR h=25 		DESC=H_convec 		MENU=Analysis
+IVAR Tinf=80 	DESC=Tinf_Convec 	MENU=Analysis
+IVAR Tfix=40 	DESC=FixTemp 		MENU=Analysis
+IVAR Qflux=600 	DESC=HeatFlux 		MENU=Analysis
+IVAR Qgen1=200 	DESC=HeatGenWire 	MENU=Analysis
+IVAR Qgen2=0 	DESC=HeatGenSQU 	MENU=Analysis
 
-GROUP recs RECR RECL
-GROUP sides R1 L1
+LOAD test/test.geo
+GMSH LOAD
 
-SET RECL COND=kL
-SET RECR COND=kR
+SET Rec1 COND=kO
+SET Rec2 COND=kI FLUX=Qflux
+SET Wire COND=kW
+SET bound1 TEMP=Tfix
+SET bound2 FLUX=Qgen2
+
+COMPILE test/test.pro
 

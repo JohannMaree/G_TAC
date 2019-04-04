@@ -28,6 +28,15 @@
     <Filter Include="src\Header Files\gobjects">
       <UniqueIdentifier>{eb6bf1a9-cf77-4a9e-a266-8f7998acbcf9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Header Files\external">
+      <UniqueIdentifier>{d5dc6b38-1241-46c2-b4b3-72ccfcaf79b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Header Files\external\include">
+      <UniqueIdentifier>{0a8f850e-54d1-434e-a7e8-795621a3d0f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Header Files\external\lib">
+      <UniqueIdentifier>{9c86c6f1-2ebf-43bd-b33a-14fd7225cd35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -44,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="..\src\variable.cpp">
       <Filter>src\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\generate.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\gobjects\gobject.cpp">
       <Filter>src\Source Files\gobjects</Filter>
@@ -85,6 +91,12 @@
       <Filter>src\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\io\proxCommands.cpp">
+      <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\generate.cpp">
+      <Filter>src\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\io\proxGmsh.cpp">
       <Filter>src\Source Files\io</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,6 +158,18 @@
     <ClInclude Include="..\src\io\proxCommands.h">
       <Filter>src\Header Files\io</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\test_git.h">
+      <Filter>src\Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\external\include\gmsh.h">
+      <Filter>src\Header Files\external\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\external\include\gmshc.h">
+      <Filter>src\Header Files\external\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\io\proxGmsh.h">
+      <Filter>src\Header Files\io</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="G_TAG.rc">
@@ -159,5 +183,10 @@
     <Text Include="..\src\io\syntax.txt">
       <Filter>src\Source Files\io</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\src\external\lib\gmsh.lib">
+      <Filter>src\Header Files\external\lib</Filter>
+    </Library>
   </ItemGroup>
 </Project>

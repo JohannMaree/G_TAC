@@ -1,6 +1,7 @@
 #include "command.h"
-#include "proxCommands.h"
-#include "proxFiles.h"
+#include "io/proxCommands.h"
+#include "io/proxFiles.h"
+#include "io/proxGmsh.h"
 #include "variable.h"
 #include "region.h"
 #include "compile.h"
@@ -16,7 +17,8 @@ namespace command {
 			execomm::help(comm);
 			break;
 		case 3:		//LOAD command
-			execomm::load(comm);
+			if (execomm::load(comm))
+				execomm::addLogEntry(comm);
 			break;
 		case 4:		//SAVE command
 			execomm::save(comm);
@@ -28,22 +30,39 @@ namespace command {
 			execomm::list(comm);
 			break;
 		case 7:		//VAR command
-			variables::validate(comm,1);
+			if (variables::validate(comm, 0))
+				execomm::addLogEntry(comm);
 			break;
 		case 8:		//IVAR command
-			variables::validate(comm,2);
+			if(variables::validate(comm,1))
+				execomm::addLogEntry(comm);
 			break;
 		case 9:		//RGN command
-			regions::validate(comm,1);
+			if(regions::validate(comm,1))
+				execomm::addLogEntry(comm);
 			break;
 		case 10:	//GRGN command
-			regions::validate(comm,2);
+			if(regions::validate(comm,2))
+				execomm::addLogEntry(comm);
 			break;
 		case 11:	//SET command
-			execomm::set(comm);
+			if (execomm::set(comm))
+				execomm::addLogEntry(comm);
 			break;
 		case 12:	//COMPILE command
-			compile::validate(comm);
+			if (compile::validate(comm))
+				execomm::addLogEntry(comm);
+			break;
+		case 13:	//DEL command
+			execomm::del(comm);
+			break;
+		case 14:	//GMSH command
+			if(pgmsh::validate(comm))
+				execomm::addLogEntry(comm);
+			break;
+		case 15:	//GETDP command
+			if (pgmsh::runGetDP(comm))
+				execomm::addLogEntry(comm);
 			break;
 
 
@@ -52,7 +71,6 @@ namespace command {
 			break;
 		}
 	}
-}
 
-
+}//end namespace command
 

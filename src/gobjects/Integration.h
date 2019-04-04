@@ -20,6 +20,12 @@ namespace gobject {
 		std::vector<iCase> iCases;
 	};
 
-	void defaultIntegration();
+	int defaultIntegration();
+
+	int addIntegration(Integration& integra);
+	int inArr_Integration(std::string& compareName);
+
+	void addToIntegration(iCase& ic, int ipos = 0);
+	int inGeoCases(iCase& iC, std::string& compare);
 
 }

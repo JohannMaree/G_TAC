@@ -16,4 +16,11 @@ namespace gobject {
 	};
 
 	void defaultJacobian();
+
+	int addJacobian(Jacobian& jac);
+	int inArr_Jacobian(std::string& compareName);
+
+	void addToJacobian(jCase& jc, int jpos = 0);
+
+
 }
