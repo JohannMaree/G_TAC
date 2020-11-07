@@ -1,4 +1,4 @@
-# G_TC
+# G_TAC
 ##### GetDP_Thermal Analysis Compiler
 
 G_TAG is a command-line parametric input application designed to reduce time taken to generate steady-state thermal input files for GetDP.
