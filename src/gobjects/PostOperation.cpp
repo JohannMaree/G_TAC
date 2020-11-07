@@ -36,7 +36,7 @@ namespace gobject {
 			opQNL.OperationType = "Print";
 			opQNL.OperationArgs.push_back(charQnl);
 			opQNL.OperationArgs.push_back("OnElementsOf " + sGroupNL_Conduction);
-			opQNL.OperationArgs.push_back("File \"" + charQfile + "\"");
+			opQNL.OperationArgs.push_back("File >> \"" + charQfile + "\"");
 			pop.Operations.push_back(opQNL);
 		}
 
