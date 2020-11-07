@@ -8,6 +8,10 @@ kM_NL = {0, 4,
 		200, 16,
 		500, 20,
 		800, 32};
+kL_T = Tensor[
+kL,0,0,
+0,kL,0,
+0,0,kL];
 NL_eps = DefineNumber[1e-09, Name "NL_Iteration/_NL_eps", Label "NL_eps"];
 NL_rel = DefineNumber[1e-09, Name "NL_Iteration/_NL_rel", Label "NL_rel"];
 NL_loop = DefineNumber[30, Name "NL_Iteration/_NL_loop", Label "NL_loop"];
@@ -15,17 +19,22 @@ NL_loop = DefineNumber[30, Name "NL_Iteration/_NL_loop", Label "NL_loop"];
 
 
 Group {
-	boundL = Region[100];
-	boundR = Region[101];
-	RecL = Region[1000];
-	RecR = Region[1001];
-	RecM = Region[1002];
+	boundL = Region[{100}];
+	boundR = Region[{101}];
+	RecL = Region[{1000}];
+	RecR = Region[{1001}];
+	RecM = Region[{1002}];
+	boundL = Region[{100}];
+	boundR = Region[{101}];
+	RecL = Region[{1000}];
+	RecR = Region[{1001}];
+	RecM = Region[{1002}];
 
 	Cond_Elements = Region[{RecL,RecR}];
-	Flux_Elements = Region[{boundR}];
-	Temp_Elements = Region[{boundL}];
-	NL_Cond_Elements = Region[{RecM}];
-	Domain_Hgrad_T = Region[{Cond_Elements,Flux_Elements,Temp_Elements,NL_Cond_Elements}];
+	Flux_Regions = Region[{boundR}];
+	Temp_Regions = Region[{boundL}];
+	NL_Cond_Regions = Region[{RecM}];
+	Domain_H_grad_T = Region[{Cond_Elements,Flux_Regions,Temp_Regions,NL_Cond_Regions}];
 }
 
 
@@ -38,7 +47,7 @@ Function {
 
 
 Constraint {
-	{ Name Type1BC; Type Assign;
+	{ Name setT_BC; Type Assign;
 		Case {
 			{ Region boundL; Value Tf; }
 		}
@@ -47,24 +56,24 @@ Constraint {
 
 
 FunctionSpace {
-	{ Name Hgrad_Tspace; Type Form0;
+	{ Name H_grad_T_fspace; Type Form0;
 		BasisFunction {
-			{ Name sN; NameOfCoef T_Node; Function BF_Node; Support Domain_Hgrad_T; Entity NodesOf[All]; }
+			{ Name sN; NameOfCoef T_Node; Function BF_Node; Support Domain_H_grad_T; Entity NodesOf[All]; }
 		}
 		Constraint {
-			{ NameOfCoef T_Node; EntityType NodesOf; NameOfConstraint Type1BC; }
+			{ NameOfCoef T_Node; EntityType NodesOf; NameOfConstraint setT_BC; }
 		}
 	}
 }
 
 
 Jacobian {
-	{ Name Volume;
+	{ Name VolumeJac;
 		Case {
 			{ Region All; Jacobian Vol; }
 		}
 	}
-	{ Name Surface;
+	{ Name SurfaceJac;
 		Case {
 			{ Region All; Jacobian Sur; }
 		}
@@ -73,7 +82,7 @@ Jacobian {
 
 
 Integration {
-	{ Name Integra; 
+	{ Name GaussIntegra; 
 		Case {
 			{ Type Gauss;
 				Case{
@@ -91,15 +100,15 @@ Integration {
 Formulation {
 	{ Name def_ThermalForm; Type FemEquation;
 		Quantity {
-			{ Name T; Type Local; NameOfSpace Hgrad_Tspace; }
+			{ Name T; Type Local; NameOfSpace H_grad_T_fspace; }
 		}
 		Equation {
 			Integral { [ condK[] * Dof{d T} , {d T} ];
-				In Cond_Elements; Jacobian Volume; Integration Integra; }
+				In Cond_Elements; Jacobian VolumeJac; Integration GaussIntegra; }
 			Integral { [ -Flux[] , {T} ];
-				In Flux_Elements; Jacobian Surface; Integration Integra; }
+				In Flux_Regions; Jacobian SurfaceJac; Integration GaussIntegra; }
 			Integral { [ NL_condK[ {T} ] * Dof{d T} , {d T} ];
-				In NL_Cond_Elements; Jacobian Volume; Integration Integra; }
+				In NL_Cond_Regions; Jacobian VolumeJac; Integration GaussIntegra; }
 		}
 	}
 }
@@ -118,17 +127,17 @@ Resolution {
 			Generate[def_NL_System];
 			GetResidual[def_NL_System, $res0];
 			Evaluate[$res = $res0];
-			Evaluate[$iT = 0];
+			Evaluate[$iTeration = 0];
 
-			Print[{$iT, $res, $res/$res0}, Format "Residual %0.3g: abs %14.9e rel %14.9e"];
+			Print[{$iTeration, $res, $res/$res0}, Format "Residual %0.3g: abs %14.9e rel %14.9e"];
 
-			While[($res > NL_eps)&&($res/$res0 > NL_rel)&&($res/$res0 <= 1)&&($iT < NL_loop)]{
+			While[($res > NL_eps)&&($res/$res0 > NL_rel)&&($res/$res0 <= 1)&&($iTeration < NL_loop)]{
 
 				Solve[def_NL_System];
 				Generate[def_NL_System];
 				GetResidual[def_NL_System, $res];
-				Evaluate[$iT = $iT + 1];
-				Print[{$iT, $res, $res/$res0}, Format "Residual %0.3g: abs %14.9e rel %14.9e"];
+			Evaluate[$iTeration = $iTeration + 1];
+			Print[{$iTeration, $res, $res/$res0}, Format "Residual %0.3g: abs %14.9e rel %14.9e"];
 
 			}
 			SaveSolution[def_NL_System];
@@ -141,10 +150,10 @@ PostProcessing {
 	{ Name def_Thermals; NameOfFormulation def_ThermalForm;
 		Quantity {
 			{ Name T; Value {
-				Term{[ {T} ]; In Domain_Hgrad_T; Jacobian Volume; }
+				Term{[ {T} ]; In Domain_H_grad_T; Jacobian VolumeJac; }
 			}}
 			{ Name q; Value {
-				Term{[ -{d T} ]; In Domain_Hgrad_T; Jacobian Volume; }
+				Term{[ -{d T} ]; In Domain_H_grad_T; Jacobian VolumeJac; }
 			}}
 		}
 	}
@@ -154,8 +163,8 @@ PostProcessing {
 PostOperation {
 	{ Name def_HeatMap; NameOfPostProcessing def_Thermals;
 		Operation {
-			Print[T, OnElementsOf Domain_Hgrad_T, File "T_map.pos"];
-			Print[q, OnElementsOf Domain_Hgrad_T, File "q_map.pos"];
+			Print[T, OnElementsOf Domain_H_grad_T, File "T_map.pos"];
+			Print[q, OnElementsOf Domain_H_grad_T, File "q_map.pos"];
 		}
 	}
 }

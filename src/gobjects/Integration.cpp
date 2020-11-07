@@ -7,41 +7,41 @@ namespace gobject {
 		ing.Name = TIntegration;
 
 		iCase ic;
-		ic.Type = "Gauss";
+		ic.Type = integraType;
 		
 		geoCase gc;
-		if (GFlagSysOrder == 1) {
+		if (GFlagSysOrder >= 1) {
 			//Default 2D Elements
 
 			gc.GeoElement = "Point";
-			gc.NumberOfPoints = 1;
+			gc.NumberOfPoints = elementPoint;
 			ic.geoCases.push_back(gc);
 			
 			gc.GeoElement = "Line";
-			gc.NumberOfPoints = 3;
+			gc.NumberOfPoints = elementLine;
 			ic.geoCases.push_back(gc);
 			
 			gc.GeoElement = "Triangle";
-			gc.NumberOfPoints = 4;
+			gc.NumberOfPoints = elementTri;
 			ic.geoCases.push_back(gc);
 
 			gc.GeoElement = "Quadrangle";
-			gc.NumberOfPoints = 4;
+			gc.NumberOfPoints = elementQuad;
 			ic.geoCases.push_back(gc);
 
-			if (GFlag3Dim) {
+			if (GFlagSysOrder >= 3) {
 				//Default 3D Elements
 
 				gc.GeoElement = "Tetrahedron";
-				gc.NumberOfPoints = 4;
+				gc.NumberOfPoints = elementTetra;
 				ic.geoCases.push_back(gc);
 
 				gc.GeoElement = "Hexahedron";
-				gc.NumberOfPoints = 6;
+				gc.NumberOfPoints = elementHexa;
 				ic.geoCases.push_back(gc);
 
 				gc.GeoElement = "Prism";
-				gc.NumberOfPoints = 6;
+				gc.NumberOfPoints = elementPrism;
 				ic.geoCases.push_back(gc);
 			}
 			

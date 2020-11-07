@@ -22,7 +22,9 @@ namespace variables {
 		constant description;
 		double value;
 		short int type = 0;
-		int used = 0;
+
+		std::vector<spair> spairs;				//type -1
+		std::vector<std::string> tensorRow;		//type -2
 	};
 
 	class ivariable: public variable {
@@ -41,15 +43,10 @@ namespace variables {
 		
 	};
 
-	class cvariable : public variable {
-	public:
-		//Type(-1)
-		std::vector<spair> spairs;
-	};
-
 	const std::string varParmList[] = {
 		"DESC",		//0
 		"PAIRS",	//1
+		"TENSOR",	//2
 
 	};
 

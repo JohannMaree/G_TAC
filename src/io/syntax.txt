@@ -29,9 +29,24 @@ GRGN: 	lists all groups
   
 #7------------------------------------------------------------------------------------------------
 VAR command:
-designates a variable with /name/ to store a numerical /value/.
+designates a variable with /name/ to store a numerical /value(s)/.
 
 Syntax: VAR [name]=[value] [opt:DESC=description]
+							
+							For a Listed Pairs Type:
+							PAIRS=[list of pairs,seperated by comma; 
+								   starting at T=0,k(T)=?;T=1,k(T)=?;
+								   pairs separated by semicolon;]
+							e.g. =[0,3;10,6]
+							translates to 	k(T)=3 for T=[0,6]
+											k(T)=6 for T=[6,inf]
+							
+							For a Tensor Type:
+							TENSOR=[list of row entries, seperated by comma;
+									rows seperated by semicolon;]
+							e.g. =[1,0,0;0,1,0;0,0,1]
+							for a 3x3 identity matrix
+									
 #8------------------------------------------------------------------------------------------------
 IVAR command:
 designates an interactive variable with /name/ to store a numerical /value/.
@@ -53,7 +68,7 @@ creates a Region with /r_name/ to refer to a numerical /identifier/.
 
 Syntax: RGN [/r_name/]=[/identifier/] [opt:DESC=description]
 								
-								Optional Regional Property Specifications:
+								Regional Property Specifications:
 								
 								For a Thermal Conduction Zone:
 								[opt:COND=Conduction Constant(k)]
@@ -62,7 +77,8 @@ Syntax: RGN [/r_name/]=[/identifier/] [opt:DESC=description]
 								[opt:CONV=Convection Constant(h)]
 								
 								For a Thermal Radiation Zone:
-								[opt:RAD=Surface Radiation Factor(ε)]
+								[opt:RAD=Surface Radiation Factor(ε)
+									 TRAD=Ambient Radiation Temperature (K)]
 								
 								For a Heat Generation Zone:
 								[opt:GEN=Heat Generated (W/m^2)]

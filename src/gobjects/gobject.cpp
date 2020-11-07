@@ -19,89 +19,99 @@ namespace gobject {
 	//GetDP Constant Term definitions
 
 	//Constant Quantity Definitions
-	std::string charT = "T";
-	std::string charQ = "q";
-	std::string charQgen = "Qgen";
+	std::string charT;
+	std::string charQ;
+	std::string charQgen;
+	std::string charQnl;
 
 	//Conduction
-	std::string sVarConduction = "condK";
-	std::string sGroupConduction = "Cond_Elements";
-	std::string sVarNL_Conduction = "NL_condK";
-	std::string sGroupNL_Conduction = "NL_Cond_Elements";
+	std::string sVarConduction;
+	std::string sGroupConduction;
+	std::string sVarNL_Conduction;
+	std::string sGroupNL_Conduction;
 
 	//Convection
-	std::string sVarConvection = "convH";
-	std::string sVarConvTInf = "TinfConv";
-	std::string sGroupConvection = "Conv_Elements";
+	std::string sVarConvection;
+	std::string sVarConvTInf;
+	std::string sGroupConvection;
 
 	//Radiation
-	std::string sVarRadiation = "radE";
-	std::string sVarRadTInf = "TinfRad";
-	std::string sGroupRadiation = "Rad_Elements";
+	std::string sVarRadiation;
+	std::string sVarRadTInf;
+	std::string sGroupRadiation;
 
 	//Generation
-	std::string sVarGeneration = "qGen";
-	std::string sGroupGeneration = "qGen_Elements";
+	std::string sVarGeneration;
+	std::string sGroupGeneration;
 
 	//HeatFlux BC
-	std::string sVarHeatFlux = "Flux";
-	std::string sGroupHeatFlux = "Flux_Elements";
+	std::string sVarHeatFlux;
+	std::string sGroupHeatFlux;
 
 	//TEmperature BC
-	std::string sVarTempConstraint = "Type1BC";
-	std::string sGroupTemperature = "Temp_Elements";
+	std::string sVarTempConstraint;
+	std::string sGroupTemperature;
 
 	//Temperature Discontinuity
-	std::string sVarTempDiscontinuity = "T_Disc";
-	std::string sGroupDiscontinuous = "Disc_Elements";
+	std::string sVarTempDiscontinuity;
+	std::string sGroupDiscontinuous;
+	std::string sVolDiscontinuous;
+	std::string sSurfDiscontinuous;
+	std::string sDomainDiscontinuous;
 
-	std::string sSpaceTCont = "T_Continuous";
-	std::string sSpaceTDisc = "T_Discontinous";
-	std::string sBasisFunctionDisc = charT + "_disc";
+	std::string sSpaceTCont;
+	std::string sSpaceTDisc;
+	std::string sBasisFunctionDisc;
 
-	std::string charTdisc = charT + "dc";
-	std::string charTcont = charT + "cn";
+	std::string charTdisc;
+	std::string charTcont;
 
-	std::string charTdiscfile = charTdisc + "_map.pos";
-	std::string charTcontfile = charTcont + "_map.pos";
-	
+	std::string charTdiscfile;
+	std::string charTcontfile;
+
 	//NonLinear Iteration
-	std::string sVarNL_InitialRes = "res0";
-	std::string sVarNL_Res = "res";
-	std::string sVarNL_Iter = "iT";
-	
-	std::string sVarNL_eps = "NL_eps";
-	std::string sVarNL_rel = "NL_rel";
-	std::string sVarNL_maxloop = "NL_loop";
+	std::string sVarNL_InitialResidual;
+	std::string sVarNL_Residual;
+	std::string sVarNL_Iteration;
 
-	std::string sVarNL_submenu = "NL_Iteration";
+	std::string sVarNL_eps;
+	std::string sVarNL_rel;
+	std::string sVarNL_maxloop;
 
-	edouble varNL_eps;
-	edouble varNL_rel;
-	int varNL_maxloop;
+	std::string sVarNL_submenu;
 
 	//Output File Names
-	std::string charTfile = charT + "_map.pos";
-	std::string charQfile = charQ + "_map.pos";
-
+	std::string charTfile;
+	std::string charQfile;
+	std::string charQgenfile;
 
 	//GetDP Default Process Object Names
-	std::string defNamePostOperation = "def_HeatMap";
-	std::string defNamePostProcess = "def_Thermals";
-	std::string defNameResolution = "def_ThermalRes";
-	std::string defNameResSystem = "def_System";
-	std::string defNameResNLSystem = "def_NL_System";
-	std::string defNameFormulation = "def_ThermalForm";
-	std::string defFormulationType = "FemEquation";
-	std::string defFormEQType = "Integral";
-	std::string defFunctionSpace = "Hgrad_Tspace";
-	std::string defBFName = "sN";
-	std::string defBasisFunction = charT + "_Node";
+	std::string defNamePostOperation;
+	std::string defNamePostProcess;
+	std::string defNameResolution;
+	std::string defNameResSystem;
+	std::string defNameResNLSystem;
+	std::string defNameFormulation;
+	std::string defFormulationType;
+	std::string defFormEQType;
+	std::string defFunctionSpace;
+	std::string defBFName;
+	std::string defBasisFunction;
 
-	std::string TIntegration = "Integra";
-	std::string TJacobianVol = "Volume";
-	std::string TJacobianSur = "Surface";
-	std::string TDomain = "Domain_Hgrad_T";
+	std::string TIntegration;
+	std::string TJacobianVol;
+	std::string TJacobianSur;
+	std::string TDomain;
+
+	//Default Gaussian Integration Points
+	std::string integraType = "Gauss";
+	int elementPoint = 1;
+	int elementLine = 3;
+	int elementTri = 4;
+	int elementQuad = 4;
+	int elementTetra = 4;
+	int elementHexa = 6;
+	int elementPrism = 6;
 
 	//GetDP Analysis_Flags
 	bool GFlagConduction;
@@ -111,12 +121,17 @@ namespace gobject {
 	bool GFlagHeatFlux;
 	bool GFlagTemperature;
 	bool GFlagDiscontinuous;
-	bool GFlag3Dim;
 	bool GFlagNL_Conduction;
 	short int GFlagSysOrder;
 	short int GFlagBFunctions;
 
+	std::string varNL_eps;
+	std::string varNL_rel;
+	std::string varNL_maxloop;
+
 	void initGFlags() {
+
+		setDefaults();
 
 		//Heat Transfer Mechanisms
 		GFlagConduction = false;
@@ -129,16 +144,101 @@ namespace gobject {
 		GFlagNL_Conduction = false;
 
 		//Geometry Mechanisms
-		GFlag3Dim = false;
 		GFlagSysOrder = 1;
 		GFlagBFunctions = 1;
 
+	}
+
+	void setDefaults() {
+		//GetDP Constant Term definitions
+
+		//Constant Quantity Definitions
+		charT = "T";
+		charQ = "q";
+		charQgen = "Qgen";
+		charQnl = "qNL";
+
+		//Conduction
+		sVarConduction = "condK";
+		sGroupConduction = "Cond_Regions";
+		sVarNL_Conduction = "NL_condK";
+		sGroupNL_Conduction = "NL_Cond_Regions";
+
+		//Convection
+		sVarConvection = "convH";
+		sVarConvTInf = "TinfConv";
+		sGroupConvection = "Conv_Regions";
+
+		//Radiation
+		sVarRadiation = "radE";
+		sVarRadTInf = "TinfRad";
+		sGroupRadiation = "Rad_Regions";
+
+		//Generation
+		sVarGeneration = "qGen";
+		sGroupGeneration = "qGen_Regions";
+
+		//HeatFlux BC
+		sVarHeatFlux = "Flux";
+		sGroupHeatFlux = "Flux_Regions";
+
+		//TEmperature BC
+		sVarTempConstraint = "setT_BC";
+		sGroupTemperature = "Temp_Regions";
+
+		//Temperature Discontinuity
+		sVarTempDiscontinuity = "setT_disc";
+		sGroupDiscontinuous = "Disc_Domains";
+		sVolDiscontinuous = "Disc_Vol";
+		sSurfDiscontinuous = "Disc_Surf";
+		sDomainDiscontinuous = "Disc_Dom";
+
+		sSpaceTCont = "Tcont";
+		sSpaceTDisc = "Tdisc";
+		sBasisFunctionDisc = charT + "_disc";
+		charTdisc = charT + "dc";
+		charTcont = charT + "cn";
+
+		//NonLinear Iteration
+		sVarNL_InitialResidual = "res0";
+		sVarNL_Residual = "res";
+		sVarNL_Iteration = "i";
+
+		sVarNL_eps = "NL_eps";
+		sVarNL_rel = "NL_rel";
+		sVarNL_maxloop = "NL_loop";
+
+		sVarNL_submenu = "NL_Iteration";
+
+		//Output File Names
+		charTfile = charT + "_map.pos";
+		charQfile = charQ + "_map.pos";
+		charQgenfile = charQgen + "_map.pos";
+		charTdiscfile = charTdisc + "_map.pos";
+		charTcontfile = charTcont + "_map.pos";
+
+		//GetDP Default Process Object Names
+		defNamePostOperation = "thermal_PostOperation";
+		defNamePostProcess = "thermal_PostProcess";
+		defNameResolution = "thermal_Resolution";
+		defNameResSystem = "thermal_System";
+		defNameResNLSystem = "thermal_System_NL";
+		defNameFormulation = "thermal_Formulation";
+		defFormulationType = "FemEquation"; //only type supported
+		defFormEQType = "Galerkin";
+		defFunctionSpace = "H_gradT_funcSpace";
+		defBFName = "sN";
+		defBasisFunction = charT + "node";
+
+		TIntegration = "GaussIntegration";
+		TJacobianVol = "VolumeJacobian";
+		TJacobianSur = "SurfaceJacobian";
+		TDomain = "Domain_H_gradT";
+
 		//NonLinear Iteration Terms
-		varNL_eps.value = 1e-9;
-		varNL_eps.sval = "1e-9";
-		varNL_rel.value = 1e-9;
-		varNL_rel.sval = "1e-9";
-		varNL_maxloop = 30;
+		varNL_eps = "1e-8";
+		varNL_rel = "1e-8";
+		varNL_maxloop = "50";
 
 	}
 

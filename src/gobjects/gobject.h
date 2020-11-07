@@ -14,11 +14,6 @@
 #include "../io/proxStrings.h"
 
 namespace gobject{
-
-	struct edouble {
-		double value;
-		std::string sval;
-	};
 	
 	//Global Variables
 	extern std::string sVarConduction;
@@ -45,33 +40,38 @@ namespace gobject{
 
 	extern std::string sVarTempDiscontinuity;
 	extern std::string sGroupDiscontinuous;
+	extern std::string sVolDiscontinuous;
+	extern std::string sSurfDiscontinuous;
+	extern std::string sDomainDiscontinuous;
 	extern std::string sSpaceTCont;
 	extern std::string sSpaceTDisc;
 	extern std::string sBasisFunctionDisc;
 	extern std::string charTdisc;
 	extern std::string charTcont;
-	extern std::string charTdiscfile;
-	extern std::string charTcontfile;
 
-	extern std::string sVarNL_InitialRes;
-	extern std::string sVarNL_Res;
-	extern std::string sVarNL_Iter;
+	extern std::string sVarNL_InitialResidual;
+	extern std::string sVarNL_Residual;
+	extern std::string sVarNL_Iteration;
 	extern std::string sVarNL_eps;
 	extern std::string sVarNL_rel;
 	extern std::string sVarNL_maxloop;
 	extern std::string sVarNL_submenu;
 
-	extern edouble varNL_eps;
-	extern edouble varNL_rel;
-	extern int varNL_maxloop;
+	extern std::string varNL_eps;
+	extern std::string varNL_rel;
+	extern std::string varNL_maxloop;
 
 	//Default Process Object Function Names
 	extern std::string charT;
 	extern std::string charQ;
 	extern std::string charQgen;
+	extern std::string charQnl;
 
 	extern std::string charTfile;
 	extern std::string charQfile;
+	extern std::string charQgenfile;
+	extern std::string charTdiscfile;
+	extern std::string charTcontfile;
 
 	extern std::string defNamePostOperation;
 	extern std::string defNamePostProcess;
@@ -90,6 +90,16 @@ namespace gobject{
 	extern std::string TJacobianSur;
 	extern std::string TDomain;
 
+	//Gaussian Integration Points
+	extern std::string integraType;
+	extern int elementPoint;
+	extern int elementLine;
+	extern int elementTri;
+	extern int elementQuad;
+	extern int elementTetra;
+	extern int elementHexa;
+	extern int elementPrism;
+
 	//GetDP Flags
 	extern bool GFlagConduction;
 	extern bool GFlagConvection;
@@ -98,7 +108,6 @@ namespace gobject{
 	extern bool GFlagHeatFlux;
 	extern bool GFlagTemperature;
 	extern bool GFlagDiscontinuous;
-	extern bool GFlag3Dim;
 	extern bool GFlagNL_Conduction;
 
 	extern short int GFlagSysOrder;
@@ -106,6 +115,7 @@ namespace gobject{
 
 	//Function Declarations
 	void initGFlags();
+	void setDefaults();
 	void clearGlobalArrays();
 
 }//end namespace gobject

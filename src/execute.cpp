@@ -1,5 +1,4 @@
 #include "execute.h"
-#include "command.h"
 #include "io/proxFiles.h"
 #include "io/proxCommands.h"
 #include "io/proxStrings.h"
@@ -8,8 +7,6 @@
 #include "variable.h"
 #include "region.h"
 
-#include <vector>
-#include <string>
 #include <iostream>
 
 namespace execomm {
@@ -42,6 +39,7 @@ namespace execomm {
 		else if (pstring::checkExtension(parm[1], "geo")) {//If LOAD geometry file
 			int l = pgmsh::readGeoFile(parm[1]);
 			if (l == 0) {
+				pgmsh::loadRegions();
 				return true;
 			}
 			else {
@@ -75,7 +73,34 @@ namespace execomm {
 		}
 	}
 
-	void clcm() {
+	void clear(const std::vector<std::string>& parm) {
+		ind pi = parm.size();
+		if (pi>1) {
+			for (ind i = 1; i < pi; ++i) {
+				std::vector<std::string> comm = pstring::lex(parm[i],'=');
+				if (pstring::icompare(parm[i],listClear[0])) {			//ALL
+					clearAll();
+				}
+				else if (pstring::icompare(parm[i], listClear[1])) {	//MODEL
+					if (comm.size() > 1) {
+						pgmsh::clearModel(std::stoi(comm[1]));
+					}
+					else {
+						pgmsh::clearModel();
+					}
+				}
+				else {
+					std::cerr << "Unknown CLEAR parameter:" << parm[i] << std::endl;
+				}
+			}
+		}
+		else {
+			std::cout << "Clear ALL..." << std::endl;
+			clearAll();
+		}
+	}
+
+	void clearAll() {
 		//Clear Registers
 		gobject::clearGlobalArrays();
 		regions::clearRegion();
@@ -84,20 +109,18 @@ namespace execomm {
 
 		//Initialise G_Flags to defaults
 		gobject::initGFlags();
-
-		//pgmsh clear
-		pgmsh::close();
-
+		
 		//Clear Record File
 		pfile::clear(recordfilepath);
 	}
 
 	void list(const std::vector<std::string>& parm) {
 		if (parm.size() > 1) {
-			for (ind i = 0; i < parm.size(); ++i) {
+			for (ind i = 1; i < parm.size(); ++i) {
 				if (pstring::icompare(parm[i], listParameters[1])) {	//ALL
 					std::cout << variables::listAllVariables();
-					std::cout << regions::listAllRegions();
+					std::cout << regions::listRegions();
+					std::cout << regions::listGlobalRegions();
 				}
 				else if (pstring::icompare(parm[i], listParameters[2])) {	//VAR
 					std::cout << variables::listVariables();
@@ -119,7 +142,8 @@ namespace execomm {
 		else {
 			//LIST all user created entities
 			std::cout << variables::listAllVariables();
-			std::cout << regions::listAllRegions();
+			std::cout << regions::listRegions();
+			std::cout << regions::listGlobalRegions();
 		}
 
 	}
@@ -157,7 +181,7 @@ namespace execomm {
 			}
 		}
 		else if (pstring::icompare(parm[1], "RGN")) {
-			int regpos = regions::inRegister(parm[2], 0);
+			int regpos = regions::inRegister(parm[2]);
 			if (regpos >= 0) {
 				regions::clearRegion(regpos);
 				std::cout << "RGN:" << parm[2] << "(" << regpos << ") deleted.\n";
@@ -173,7 +197,7 @@ namespace execomm {
 			}
 		}
 		else if (pstring::icompare(parm[1], "GROUP")) {
-			int regpos = regions::inRegister(parm[2], 1);
+			int regpos = regions::inGRegister(parm[2]);
 			if (regpos >= 0) {
 				regions::clearGlobalRegion(regpos);
 				std::cout << "GROUP:" << parm[2] << "(" << regpos << ") deleted.\n";

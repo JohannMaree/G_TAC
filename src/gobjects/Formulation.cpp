@@ -17,7 +17,7 @@ namespace gobject {
 			//Conduction EQ
 			formEquation condEQ;
 			condEQ.EQType = defFormEQType;
-			condEQ.PDE = sVarConduction + "[] * Dof{d " + charT + "} , {d " + charT + "}";
+			condEQ.PDE = "-" + sVarConduction + "[] * Dof{d " + charT + "} , {d " + charT + "}";
 			condEQ.DomainName = sGroupConduction;
 			condEQ.JacobianName = TJacobianVol;
 			condEQ.IntegrationName = TIntegration;
@@ -79,7 +79,7 @@ namespace gobject {
 			//NonLinear Conduction EQ
 			formEquation ncondEQ;
 			ncondEQ.EQType = defFormEQType;
-			ncondEQ.PDE = sVarNL_Conduction + "[ {" + charT +"} ] * Dof{d " + charT + "} , {d " + charT + "}";
+			ncondEQ.PDE = "-" + sVarNL_Conduction + "[ {" + charT +"} ] * Dof{d " + charT + "} , {d " + charT + "}";
 			ncondEQ.DomainName = sGroupNL_Conduction;
 			ncondEQ.JacobianName = TJacobianVol;
 			ncondEQ.IntegrationName = TIntegration;

@@ -4,7 +4,8 @@
 #include "gobjects/gobject.h"
 #include "io/proxStrings.h"
 #include "io/proxFiles.h"
-#include "generate.h"
+#include "io/proxGmsh.h"
+#include "io/proxPro.h"
 
 #include <sstream>
 #include <memory>
@@ -18,6 +19,7 @@ std::string groupGEN;
 std::string groupFLUX;
 std::string groupTEMP;
 std::string groupDISC;
+short int DISCfspaces;
 std::string groupNL_COND;
 
 std::string groupALL;
@@ -56,15 +58,15 @@ namespace compile {
 		pass.push_back("MENU=" + gobject::sVarNL_submenu);
 
 		if (variables::inRegister(gobject::sVarNL_eps) < 0) {
-			pass[1] = gobject::sVarNL_eps + "=" + gobject::varNL_eps.sval;
+			pass[1] = gobject::sVarNL_eps + "=" + gobject::varNL_eps;
 			variables::validate(pass, -1);
 		}
 		if (variables::inRegister(gobject::sVarNL_rel) < 0) {
-			pass[1] = gobject::sVarNL_rel + "=" + gobject::varNL_rel.sval;
+			pass[1] = gobject::sVarNL_rel + "=" + gobject::varNL_rel;
 			variables::validate(pass, -1);
 		}
 		if (variables::inRegister(gobject::sVarNL_maxloop) < 0) {
-			pass[1] = gobject::sVarNL_maxloop + "=" + std::to_string(gobject::varNL_maxloop);
+			pass[1] = gobject::sVarNL_maxloop + "=" + gobject::varNL_maxloop;
 			variables::validate(pass, -1);
 		}
 	}
@@ -72,6 +74,7 @@ namespace compile {
 	void defaults(const std::string& filename) {
 
 		//Register System flags
+		DISCfspaces = 0;
 		regionPreCompile();
 
 		//Open groups for additive info
@@ -99,8 +102,10 @@ namespace compile {
 		//Close open groups
 		closeGlobalGroups();
 
+		//write the .pro file
 		writeASCII(filename);
 		std::cout << "FILE:" << filename << " generated succesfully.\n";
+		
 	}
 
 	void writeASCII(const std::string& filename) {
@@ -108,31 +113,25 @@ namespace compile {
 		pfile::clear(filename);
 
 		//Write GObjects to ASCII file
-		pfile::write(filename, generate::globals());
+		pfile::write(filename, ppro::globals());
 
-		pfile::write(filename, generate::group());
-		pfile::write(filename, generate::function());
-		pfile::write(filename, generate::constraint());
+		pfile::write(filename, ppro::group());
+		pfile::write(filename, ppro::function());
+		pfile::write(filename, ppro::constraint());
 
-		pfile::write(filename, generate::functionspace());
-		pfile::write(filename, generate::jacobian());
-		pfile::write(filename, generate::integration());
+		pfile::write(filename, ppro::functionspace());
+		pfile::write(filename, ppro::jacobian());
+		pfile::write(filename, ppro::integration());
 
-		pfile::write(filename, generate::formulation());
-		pfile::write(filename, generate::resolution());
-		pfile::write(filename, generate::postprocessing());
-		pfile::write(filename, generate::postoperation());
+		pfile::write(filename, ppro::formulation());
+		pfile::write(filename, ppro::resolution());
+		pfile::write(filename, ppro::postprocessing());
+		pfile::write(filename, ppro::postoperation());
 
 	}
 
 	void compileFromRegions() {
 		for (ind i = 0; i < GRegister_Regions.size(); ++i) {
-
-			//Group Definition
-			std::ostringstream def;
-			def << GRegister_Regions[i].name << " = ";
-			def << "Region[" << GRegister_Regions[i].identifier << "]";
-			GArr_Groups.push_back(def.str());
 
 			//Function Defintions
 			if (GRegister_Regions[i].conduction.exists) {		//Conduction Function
@@ -169,63 +168,99 @@ namespace compile {
 	}
 
 	void regionPreCompile() {
+		int rcount = 0;
 		for (ind i = 0; i < GRegister_Regions.size(); ++i) {
 
 			//Set GFlags for gobject generation
-			if (!gobject::GFlagConduction) {
-				if (GRegister_Regions[i].conduction.exists) {
-					gobject::GFlagConduction = true;
-				}
-			}
-			if (!gobject::GFlagConvection) {
-				if (GRegister_Regions[i].convection.exists) {
-					gobject::GFlagConvection = true;
-				}
-			}
-			if (!gobject::GFlagRadiation) {
-				if (GRegister_Regions[i].radiation.exists) {
-					gobject::GFlagRadiation = true;
-				}
-			}
-			if (!gobject::GFlagGeneration) {
-				if (GRegister_Regions[i].generation.exists) {
-					gobject::GFlagGeneration = true;
-				}
-			}
-			if (!gobject::GFlagTemperature) {
-				if (GRegister_Regions[i].temperature.exists) {
-					gobject::GFlagTemperature = true;
-				}
-			}
-			if (!gobject::GFlagHeatFlux) {
-				if (GRegister_Regions[i].heatflux.exists) {
-					gobject::GFlagHeatFlux = true;
-				}
-			}
-			if (!gobject::GFlagDiscontinuous) {
-				if (GRegister_Regions[i].temp_disc.exists) {
-					gobject::GFlagDiscontinuous = true;
-				}
-			}
-			if (!gobject::GFlagNL_Conduction) {
-				if (GRegister_Regions[i].conduction.exists) {
-					int in = variables::inRegister(GRegister_Regions[i].conduction.value);
-					if (in >= 0) {
-						if (GRegister_Variables[in]->type == -1) {
-							gobject::GFlagNL_Conduction = true;
-						}
+			if (GRegister_Regions[i].conduction.exists) {
+				int in = variables::inRegister(GRegister_Regions[i].conduction.value);
+				if (in >= 0) { //if variable used as COND value
+					if (GRegister_Variables[in]->type == -1) {	//if var is PAIR type
+						gobject::GFlagNL_Conduction = true;
 					}
 				}
+				gobject::GFlagConduction = true;
+				++GRegister_Regions[i].mechanics;
 			}
 
+			if (GRegister_Regions[i].convection.exists) {
+				gobject::GFlagConvection = true;
+				++GRegister_Regions[i].mechanics;
+			}
+
+			if (GRegister_Regions[i].radiation.exists) {
+				gobject::GFlagRadiation = true;
+				++GRegister_Regions[i].mechanics;
+			}
+
+			if (GRegister_Regions[i].generation.exists) {
+				gobject::GFlagGeneration = true;
+				++GRegister_Regions[i].mechanics;
+			}
+
+			if (GRegister_Regions[i].temperature.exists) {
+				gobject::GFlagTemperature = true;
+				++GRegister_Regions[i].mechanics;
+			}
+
+			if (GRegister_Regions[i].heatflux.exists) {
+				gobject::GFlagHeatFlux = true;
+				++GRegister_Regions[i].mechanics;
+			}
+
+			if (GRegister_Regions[i].temp_disc.exists) {
+				gobject::GFlagDiscontinuous = true;
+				++GRegister_Regions[i].mechanics;
+				
+				++DISCfspaces;	//count DISC spaces
+				GRegister_Regions[i].discID = DISCfspaces;
+			}
+
+			//set region dimension
+			if (!GRegister_Regions[i].dimension.exists) {
+				GRegister_Regions[i].dimension.value = std::to_string(pgmsh::getDimension(GRegister_Regions[i].identifier.first));
+				GRegister_Regions[i].dimension.exists = true;
+			}
+
+			//set max model Dimension
+			if (gobject::GFlagSysOrder != 3) {
+				if (gobject::GFlagSysOrder != 2) {
+					gobject::GFlagSysOrder = std::stoi(GRegister_Regions[i].dimension.value);
+				}
+				else {
+					gobject::GFlagSysOrder = std::stoi(GRegister_Regions[i].dimension.value);
+				}
+			}
+			
+			//Group Definition (only if region contains heat transfer mechanics)
+			if (GRegister_Regions[i].mechanics > 0) {
+				std::ostringstream def;
+				def << GRegister_Regions[i].name << " = ";
+				if (GRegister_Regions[i].identifier.range > 0) {
+					def << "Region[{" << GRegister_Regions[i].identifier.first;
+					def << ":" << GRegister_Regions[i].identifier.last << "}]";
+				}
+				else {
+					def << "Region[{" << GRegister_Regions[i].identifier.first << "}]";
+				}
+				GArr_Groups.push_back(def.str());
+				rcount++;
+			}
 		}
+		std::cout << "Region Pre-Compile complete. [" << rcount << "] regions added.\n";
 	}
 
 	//Individual Entity Compilation Methods
 	void rgnConduction(regions::region& rgn) {
+		
+		if (!rgn.dimension.exists) {
+			rgn.dimension.value = pgmsh::getDimension(rgn.identifier.first);
+			rgn.dimension.exists = true;
+		}
+
 		std::string val = rgn.conduction.value;
 		int in = variables::inRegister(val);
-		if (in >= 0) {//If Value is VAR
+		if (in >= 0) {//If Value is VAR that exists
 			std::ostringstream func;
 			if (GRegister_Variables[in]->type == -1) {// Pair Interpolation Type
 				func << gobject::sVarNL_Conduction << "[";
@@ -234,9 +269,26 @@ namespace compile {
 				func << "{List[" << val << "]}";
 				GArr_Functions.push_back(func.str());
 
-
 				//Add region to NL conduction group
-				groupNL_COND += rgn.name + ",";
+				if (std::stoi(rgn.dimension.value) == gobject::GFlagSysOrder) {
+					groupNL_COND += rgn.name + ",";
+				}
+			}
+			else if (GRegister_Variables[in]->type == -2) {//Tensor Type
+				func << gobject::sVarConduction << "[";
+				func << rgn.name;
+				func << "] = Tensor[";
+				for (ind i = 0; i < GRegister_Variables[in]->tensorRow.size(); ++i) {
+					func << GRegister_Variables[in]->tensorRow[i] << ",";
+				}
+				func.seekp(-1, func.cur);
+				func << "]";
+				GArr_Functions.push_back(func.str());
+				
+				//Add region to conduction group
+				if (std::stoi(rgn.dimension.value) == gobject::GFlagSysOrder) {
+					groupCOND += rgn.name + ",";
+				}
 			}
 			else {//Linear Type
 				func << gobject::sVarConduction << "[";
@@ -244,8 +296,11 @@ namespace compile {
 				func << "] = ";
 				func << val;
 				GArr_Functions.push_back(func.str());
+				
 				//Add region to conduction group
-				groupCOND += rgn.name + ",";
+				if (std::stoi(rgn.dimension.value) == gobject::GFlagSysOrder) {
+					groupCOND += rgn.name + ",";
+				}
 			}
 		}
 		else if (pstring::isNumber(val)) {//If Value is Number
@@ -255,8 +310,11 @@ namespace compile {
 			func << "] = ";
 			func << val;
 			GArr_Functions.push_back(func.str());
+
 			//Add region to conduction group
-			groupCOND += rgn.name + ",";
+			if (std::stoi(rgn.dimension.value) == gobject::GFlagSysOrder) {
+				groupCOND += rgn.name + ",";
+			}
 		}
 		else {
 			std::cerr << "COMPILE ERROR: COND VAL:" << val << ", RGN:" << rgn.name << " conduction value not valid.\n";
@@ -318,8 +376,13 @@ namespace compile {
 		func << "] = ";
 		func << rgn.generation.value;
 		GArr_Functions.push_back(func.str());
+
 		//Add region to generation group
-		groupGEN += rgn.name + ",";
+		if (rgn.dimension.exists) {
+			if (std::stoi(rgn.dimension.value) == gobject::GFlagSysOrder) {
+				groupGEN += rgn.name + ",";
+			}
+		}
 	}
 
 	void rgnTemperature(regions::region& rgn) {
@@ -360,13 +423,57 @@ namespace compile {
 	}
 
 	void rgnTempDisc(regions::region& rgn) {
+		//Load Region Dimension (0,1,2,3-D)
+		if (!rgn.dimension.exists) {
+			rgn.dimension.value = pgmsh::getDimension(rgn.identifier.first);
+			rgn.dimension.exists = true;
+		}
+
+		std::string grDisc;
+		//Set Dicontinuous Surface
+		if (std::stoi(rgn.dimension.value) == 3) {											//if 3D region
+			std::string dSur, dVol;
+			if (!rgn.disc_surf.exists) {
+				std::vector<int> vint = pgmsh::getPSursForPVol(rgn.identifier.first);
+				if (!vint.empty()) {
+					rgn.disc_surf.value = pgmsh::getPName(2, vint[0]); //defaults to 0th physical surface bounding vol region 
+					rgn.disc_surf.exists = true;
+				}
+				else {
+					rgn.disc_surf.value = pgmsh::createPSurFromPVol(rgn.identifier.first);
+					rgn.disc_surf.exists = true;
+				}
+			}
+			dSur = gobject::sSurfDiscontinuous + std::to_string(rgn.discID);
+			grDisc = dSur + " = Region[{" + rgn.disc_surf.value + "}];\n\t";
+			dVol = gobject::sVolDiscontinuous + std::to_string(rgn.discID);
+			grDisc += dVol + " = Region[{" + rgn.name + "}];\n\t";
+			grDisc += gobject::sDomainDiscontinuous + std::to_string(rgn.discID);
+			grDisc += " = Region[{" + dSur + "," + dVol + "}]";
+		}
+		else {														//if 0,1,2-D region
+			std::string dSur;
+			if (!rgn.disc_surf.exists) {
+				rgn.disc_surf.value = pgmsh::getPName(std::stoi(rgn.dimension.value), rgn.identifier.first);
+				rgn.disc_surf.exists = true;
+				//set region itself as discontinuous
+			}
+			dSur = gobject::sSurfDiscontinuous + std::to_string(rgn.discID);
+			grDisc += dSur + " = Region[{" + rgn.disc_surf.value + "}];\n\t";
+			grDisc += gobject::sDomainDiscontinuous + std::to_string(rgn.discID);
+			grDisc += " = Region[{" + dSur + "}]";
+		}
+
+		//Add Group
+		GArr_Groups.push_back(grDisc);
+
 		//S1: Add BC Type 1 Constraint Discontinuity
 		gobject::Constraint c;
 		c.Name = gobject::sVarTempDiscontinuity;
 		c.Type = "Assign";
 
 		gobject::cCase cs;
-		cs.Region = rgn.name;
+		cs.Region = gobject::sSurfDiscontinuous + std::to_string(rgn.discID);
 		cs.Value = rgn.temp_disc.value;
 		c.Cases.push_back(cs);
 
@@ -378,21 +485,24 @@ namespace compile {
 		fs.Type = "Form0";
 
 		gobject::fsBasisFunction dbf;
-		dbf.Name = gobject::defBFName + "dc";
-		dbf.NameOfCoef = gobject::charTdisc;
+		dbf.Name = gobject::defBFName + "dc" + std::to_string(rgn.discID);
+		dbf.NameOfCoef = gobject::charTdisc + std::to_string(rgn.discID);
 		dbf.Function = "BF_Node";
-		dbf.Support = gobject::sGroupDiscontinuous;
-		dbf.Entity = "NodesOf[" + gobject::sGroupDiscontinuous + "]";
+		dbf.Support = gobject::sDomainDiscontinuous + std::to_string(rgn.discID);
+		dbf.Entity = "NodesOf[" + gobject::sSurfDiscontinuous + std::to_string(rgn.discID) + "]";
+		
 		fs.BasisFunctions.push_back(dbf);
 
-		//S3: Divide Domain into Two Spaces; Continuous & Discontinuous
-		gobject::fsSubspace fsCon;
-		fsCon.Name = gobject::sSpaceTCont;
-		fsCon.NameOfBasisFunction = gobject::defBFName;
-		fs.Subspaces.push_back(fsCon);
+		//S3: Divide Domain into Two Function Spaces; Continuous & Discontinuous
+		if (rgn.discID == 1) {
+			gobject::fsSubspace fsCon;
+			fsCon.Name = gobject::sSpaceTCont;
+			fsCon.NameOfBasisFunction = gobject::defBFName;
+			fs.Subspaces.push_back(fsCon);
+		}
 
 		gobject::fsSubspace fsDiscon;
-		fsDiscon.Name = gobject::sSpaceTDisc;
+		fsDiscon.Name = gobject::sSpaceTDisc + std::to_string(rgn.discID);
 		fsDiscon.NameOfBasisFunction = dbf.Name;
 		fs.Subspaces.push_back(fsDiscon);
 
@@ -409,18 +519,20 @@ namespace compile {
 		fm.Name = gobject::defNameFormulation;
 		fm.Type = gobject::defFormulationType;
 
-		gobject::formQuantity fqc;
-		fqc.Name = gobject::charTcont;
-		fqc.Type = "Local";
-		fqc.NameOfSpace = gobject::defFunctionSpace + "[";
-		fqc.NameOfSpace += gobject::sSpaceTCont + "]";
-		fm.Quantities.push_back(fqc);
+		if (rgn.discID == 1) {
+			gobject::formQuantity fqc;
+			fqc.Name = gobject::charTcont;
+			fqc.Type = "Local";
+			fqc.NameOfSpace = gobject::defFunctionSpace + "[";
+			fqc.NameOfSpace += gobject::sSpaceTCont + "]";
+			fm.Quantities.push_back(fqc);
+		}
 
 		gobject::formQuantity fqd;
-		fqd.Name = gobject::charTdisc;
+		fqd.Name = gobject::charTdisc + std::to_string(rgn.discID);
 		fqd.Type = "Local";
 		fqd.NameOfSpace = gobject::defFunctionSpace + "[";
-		fqd.NameOfSpace += gobject::sSpaceTDisc + "]";
+		fqd.NameOfSpace += gobject::sSpaceTDisc + std::to_string(rgn.discID) + "]";
 		fm.Quantities.push_back(fqd);
 
 		gobject::addFormulation(fm);
@@ -430,17 +542,19 @@ namespace compile {
 		pp.Name = gobject::defNamePostProcess;
 		pp.NameOfFormulation = gobject::defNameFormulation;
 		
-		gobject::postQuantity pqc;
-		pqc.Name = gobject::charTcont;
-		pqc.Term = "{" + gobject::charTcont + "}";
-		pqc.Domain = gobject::TDomain;
-		pqc.Jacobian = gobject::TJacobianVol;
-		pp.Quantities.push_back(pqc);
+		if (rgn.discID == 1) {
+			gobject::postQuantity pqc;
+			pqc.Name = gobject::charTcont;
+			pqc.Term = "{" + gobject::charTcont + "}";
+			pqc.Domain = gobject::TDomain;
+			pqc.Jacobian = gobject::TJacobianVol;
+			pp.Quantities.push_back(pqc);
+		}
 
 		gobject::postQuantity pqd;
-		pqd.Name = gobject::charTdisc;
-		pqd.Term = "{" + gobject::charTdisc + "}";
-		pqd.Domain = gobject::TDomain;
+		pqd.Name = gobject::charTdisc + std::to_string(rgn.discID);
+		pqd.Term = "{" + pqd.Name + "}";
+		pqd.Domain = gobject::sGroupDiscontinuous;
 		pqd.Jacobian = gobject::TJacobianVol;
 		pp.Quantities.push_back(pqd);
 
@@ -450,25 +564,27 @@ namespace compile {
 		gobject::PostOperation po;
 		po.Name = gobject::defNamePostOperation;
 		po.NameOfPostProcessing = gobject::defNamePostProcess;
-		
-		gobject::postOp poc;
-		poc.OperationType = "Print";
-		poc.OperationArgs.push_back(gobject::charTcont);
-		poc.OperationArgs.push_back("OnElementsOf " + gobject::TDomain);
-		poc.OperationArgs.push_back("File \"" + gobject::charTcontfile + "\"");
-		po.Operations.push_back(poc);
+
+		if (rgn.discID == 1) {
+			gobject::postOp poc;
+			poc.OperationType = "Print";
+			poc.OperationArgs.push_back(gobject::charTcont);
+			poc.OperationArgs.push_back("OnElementsOf " + gobject::TDomain);
+			poc.OperationArgs.push_back("File \"" + gobject::charTcontfile + "\"");
+			po.Operations.push_back(poc);
+		}
 
 		gobject::postOp pod;
 		pod.OperationType = "Print";
-		pod.OperationArgs.push_back(gobject::charTdisc);
-		pod.OperationArgs.push_back("OnElementsOf " + gobject::sGroupDiscontinuous);
+		pod.OperationArgs.push_back(gobject::charTdisc + std::to_string(rgn.discID));
+		pod.OperationArgs.push_back("OnElementsOf " + gobject::sDomainDiscontinuous + std::to_string(rgn.discID));
 		pod.OperationArgs.push_back("File \"" + gobject::charTdiscfile + "\"");
 		po.Operations.push_back(pod);
 
 		gobject::addPostOperation(po);
 
-		//Add region to Discon group
-		groupDISC += rgn.name + ",";
+		//Add domain to Discontinuous domain group
+		groupDISC += gobject::sDomainDiscontinuous + std::to_string(rgn.discID) + ",";
 	}
 
 	//Region Group definitions

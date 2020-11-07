@@ -17,17 +17,17 @@ namespace gobject {
 			nlop.Operations.push_back("");
 
 			nlop.Operations.push_back("Generate[" + nlop.Name + "]");
-			nlop.Operations.push_back("GetResidual[" + nlop.Name + ", $" + sVarNL_InitialRes + "]");
-			nlop.Operations.push_back("Evaluate[$" + sVarNL_Res + " = $" + sVarNL_InitialRes + "]");
-			nlop.Operations.push_back("Evaluate[$" + sVarNL_Iter + " = 0]");
+			nlop.Operations.push_back("GetResidual[" + nlop.Name + ", $" + sVarNL_InitialResidual + "]");
+			nlop.Operations.push_back("Evaluate[$" + sVarNL_Residual + " = $" + sVarNL_InitialResidual + "]");
+			nlop.Operations.push_back("Evaluate[$" + sVarNL_Iteration + " = 0]");
 			nlop.Operations.push_back("");
 
 			//Info print command for gmsh
 			std::string printOps = "";
 			printOps += "Print[{";
-			printOps +=	"$" + sVarNL_Iter + ", ";
-			printOps += "$" + sVarNL_Res + ", ";
-			printOps += "$" + sVarNL_Res + "/$" + sVarNL_InitialRes + "}, ";
+			printOps +=	"$" + sVarNL_Iteration + ", ";
+			printOps += "$" + sVarNL_Residual + ", ";
+			printOps += "$" + sVarNL_Residual + "/$" + sVarNL_InitialResidual + "}, ";
 			printOps += "Format \"Residual %0.3g: abs %14.9e rel %14.9e\"";
 			printOps += "]";
 			nlop.Operations.push_back(printOps);
@@ -36,22 +36,22 @@ namespace gobject {
 			//Iteration Convergence Loop
 			std::string loopOps = "";
 			loopOps += "While[";
-			loopOps += "($" + sVarNL_Res + " > " + sVarNL_eps + ")";
+			loopOps += "($" + sVarNL_Residual + " > " + sVarNL_eps + ")";
 			loopOps += "&&";
-			loopOps += "($" + sVarNL_Res + "/$" + sVarNL_InitialRes + " > " + sVarNL_rel + ")";
+			loopOps += "($" + sVarNL_Residual + "/$" + sVarNL_InitialResidual + " > " + sVarNL_rel + ")";
 			loopOps += "&&";
-			loopOps += "($" + sVarNL_Res + "/$" + sVarNL_InitialRes + " <= 1)";
+			loopOps += "($" + sVarNL_Residual + "/$" + sVarNL_InitialResidual + " <= 1)";
 			loopOps += "&&";
-			loopOps += "($" + sVarNL_Iter + " < " + sVarNL_maxloop + ")";
+			loopOps += "($" + sVarNL_Iteration + " < " + sVarNL_maxloop + ")";
 			loopOps += "]{";
 			nlop.Operations.push_back(loopOps);
 			nlop.Operations.push_back("");
 
 			nlop.Operations.push_back("\tSolve[" + nlop.Name + "]");
 			nlop.Operations.push_back("\tGenerate[" + nlop.Name + "]");
-			nlop.Operations.push_back("\tGetResidual[" + nlop.Name + ", $" + sVarNL_Res + "]");
-			nlop.Operations.push_back("Evaluate[$" + sVarNL_Iter + " = $" + sVarNL_Iter + " + 1]");
-			nlop.Operations.push_back(printOps);
+			nlop.Operations.push_back("\tGetResidual[" + nlop.Name + ", $" + sVarNL_Residual + "]");
+			nlop.Operations.push_back("\tEvaluate[$" + sVarNL_Iteration + " = $" + sVarNL_Iteration + " + 1]");
+			nlop.Operations.push_back("\t" + printOps);
 			nlop.Operations.push_back("");
 			loopOps = "}";
 			nlop.Operations.push_back(loopOps);

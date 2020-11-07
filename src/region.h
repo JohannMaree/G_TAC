@@ -9,13 +9,19 @@ namespace regions {
 		std::string value;
 	};
 
+	struct id {
+		int first, last, range = 0;
+	};
+
 	class region {
 	public:
 		std::string name;		//name string, unique to GMSH
-		std::string identifier;	//id tag int, unique to GMSH
+		id identifier;			//physical identifier, unique to GMSH
 		constant description;	//One word string, description of region
 		
-		constant dimension;		//Val=0D,1D,2D,3D
+		constant dimension;		//Val=0,1,2,3
+
+		int mechanics = 0;
 
 		//Primary Conditions
 		constant conduction;	//Val=cond coefficient k
@@ -28,7 +34,9 @@ namespace regions {
 		constant heatflux;		//Val=surface heatflux BC
 
 		//Tertiary Conditions
-		constant temp_disc;		//Val=temp discontinuity/jump
+		constant temp_disc;		//Val=temp discontinuity/gap
+		constant disc_surf;		//Val=interface surface to set gap
+		short int discID;
 
 		//Primary operating points
 		constant tconv;			//Val=conv fluid temp
@@ -39,9 +47,8 @@ namespace regions {
 	class gregion {
 	public:
 		std::string name;
-		constant description;
 
-		std::vector<regions::region *> regions;
+		std::vector<regions::region*> regions;
 	};
 
 	const std::string regParmList[] = {
@@ -52,29 +59,26 @@ namespace regions {
 		"TEMP",		//4
 		"FLUX",		//5
 		"GEN",		//6
-		"JUMP",		//7
+		"TDISC",	//7
 		"DIM",		//8
 		"TCONV",	//9
 		"TRAD",		//10
-
-	};
-
-	const std::string gRegParmList[] = {
-		"DESC",		//0
+		"DSURF",	//11
 
 	};
 
 	bool validate(const std::vector<std::string>& parm, int regType);
-	bool addRgn(const std::vector<std::string>& parm);
-	bool addGRgn(const std::vector<std::string>& parm);
+	int addRgn(const std::vector<std::string>& parm);
+	int addGRgn(const std::vector<std::string>& parm);
 	void setProperties(const std::string& comm, region* rgn);
 	bool setRgn(const std::vector<std::string>& parm);
 
 	std::string listRegions();
 	std::string listGlobalRegions();
-	std::string listAllRegions();
 
-	int inRegister(const std::string& rname, short int rType);
+	int inRegister(const std::string& id);
+	int inRegister(const int& id);
+	int inGRegister(const std::string& id);
 	int inGRegion(const std::string& rgname, gregion* gr);
 
 	void clearRegion(int pos = (-1));
