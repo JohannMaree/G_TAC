@@ -37,6 +37,9 @@
     <Filter Include="src\Header Files\external\lib">
       <UniqueIdentifier>{9c86c6f1-2ebf-43bd-b33a-14fd7225cd35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\bin">
+      <UniqueIdentifier>{6e0ff546-f91d-42af-9588-64db0c4df9a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -84,19 +87,16 @@
     <ClCompile Include="..\src\gobjects\Constraint.cpp">
       <Filter>src\Source Files\gobjects</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\command.cpp">
-      <Filter>src\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\execute.cpp">
       <Filter>src\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\io\proxCommands.cpp">
       <Filter>src\Source Files\io</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\generate.cpp">
-      <Filter>src\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\io\proxGmsh.cpp">
+      <Filter>src\Source Files\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\proxPro.cpp">
       <Filter>src\Source Files\io</Filter>
     </ClCompile>
   </ItemGroup>
@@ -115,9 +115,6 @@
     </ClInclude>
     <ClInclude Include="..\src\io\proxStrings.h">
       <Filter>src\Header Files\io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\generate.h">
-      <Filter>src\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\gobjects\gobject.h">
       <Filter>src\Header Files\gobjects</Filter>
@@ -149,9 +146,6 @@
     <ClInclude Include="..\src\gobjects\Constraint.h">
       <Filter>src\Header Files\gobjects</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\command.h">
-      <Filter>src\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\execute.h">
       <Filter>src\Header Files</Filter>
     </ClInclude>
@@ -161,13 +155,13 @@
     <ClInclude Include="..\src\test_git.h">
       <Filter>src\Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\io\proxGmsh.h">
+      <Filter>src\Header Files\io</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\external\include\gmsh.h">
       <Filter>src\Header Files\external\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\external\include\gmshc.h">
-      <Filter>src\Header Files\external\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\io\proxGmsh.h">
+    <ClInclude Include="..\src\proxPro.h">
       <Filter>src\Header Files\io</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,5 +182,13 @@
     <Library Include="..\src\external\lib\gmsh.lib">
       <Filter>src\Header Files\external\lib</Filter>
     </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\external\bin\gmsh.exe">
+      <Filter>src\bin</Filter>
+    </None>
+    <None Include="..\src\external\lib\gmsh-4.6.dll">
+      <Filter>src\Header Files\external\lib</Filter>
+    </None>
   </ItemGroup>
 </Project>

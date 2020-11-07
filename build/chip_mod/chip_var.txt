@@ -1,0 +1,38 @@
+// Variable Definitions
+
+IVAR T1=4.2 DESC=BC_Temperature1 	MENU=Simulation
+IVAR F1=16 	DESC=BC_HeatFlux1 		MENU=Simulation
+IVAR Q1=20 	DESC=HeatGeneration1	MENU=Simulation
+
+IVAR G1=0.8		DESC=TempDisc1		MENU=Simulation
+IVAR G2=0.4 	DESC=TempDisc2		MENU=Simulation
+IVAR G3=0.1 	DESC=TempDisc3		MENU=Simulation
+IVAR G4=0.2 	DESC=TempDisc4		MENU=Simulation
+IVAR G5=0.1 	DESC=TempDisc5		MENU=Simulation
+
+IVAR kPCB0=170	DESC=PCB0_conductivity 	MENU=Simulation
+VAR kPCB0_T 	TENSOR=kPCB0/2,0,0;0,kPCB0,0;0,0,kPCB0*2
+
+IVAR kDIE=200	DESC=DIE_conductivity 	MENU=Simulation
+IVAR kBOT=400	DESC=BOT_conductivity 	MENU=Simulation
+IVAR kM1=160	DESC=M1_conductivity 	MENU=Simulation
+IVAR kM0=160	DESC=M0_conductivity 	MENU=Simulation
+IVAR kI0=300	DESC=I0_conductivity 	MENU=Simulation
+
+IVAR kPCB1=170	DESC=PCB1_conductivity 	MENU=Simulation
+VAR kPCB1_T 	TENSOR=kPCB1/2,0,0;0,kPCB1,0;0,0,kPCB1*2
+
+IVAR kTOP=2		DESC=TOP_conductivity 	MENU=Simulation
+VAR kTOP_P 		PAIRS=0,kTOP/2;8,kTOP;12,kTOP*2
+
+IVAR kWB=10		DESC=WB_conductivity 	MENU=Simulation
+VAR kWB_P		PAIRS=0,kWB;4,kWB/2;8,kWB/3;16,kWB/4
+
+IVAR hTinf=10 	DESC=AmbientConvectionTemperature	MENU=Simulation
+IVAR hPCB0=20	DESC=PCB0_ConvectionCoefficient		MENU=Simulation
+IVAR hDIE=30	DESC=DIE_ConvectionCoefficient		MENU=Simulation
+IVAR hPCB1=10	DESC=PCB1_ConvectionCoefficient		MENU=Simulation
+IVAR hTOP=10	DESC=TOP_ConvectionCoefficient		MENU=Simulation
+
+IVAR F2=-200	DESC=HeatFluxCryoCooling					MENU=Simulation
+IVAR rTinf=70	DESC=RadiationEmissiveSurfaceTemperature	MENU=Simulation

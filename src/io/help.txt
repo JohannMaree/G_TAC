@@ -16,6 +16,6 @@ SET			- add parameters to a region or global region group
 DEL			- delete a region or variable
 
 System Commands:
-COMPILE 	- create ASCII .pro file 
-GMSH		- interface with .geo files & gmsh interface
-GETDP		- interface with .pro files & getDP CLI
+COMPILE 	- create ASCII FEA .pro file 
+GMSH		- interface with .geo files & gmsh CLI
+GETDP		- interface with .pro files & getdp CLI

@@ -16,18 +16,28 @@ namespace gobject {
 
 		postQuantity pqQ;
 		pqQ.Name = charQ;
-		pqQ.Domain = TDomain;
-		pqQ.Term = "-{d " + charT + "}";
+		pqQ.Domain = sGroupConduction;
+		pqQ.Term = "-" + sVarConduction + "[]*{d " + charT + "}";
 		pqQ.Jacobian = TJacobianVol;
 		pp.Quantities.push_back(pqQ);
 
 		if (GFlagGeneration) {
 			postQuantity pqQgen;
 			pqQgen.Name = charQgen;
-			pqQgen.Domain = TDomain;
+			pqQgen.Domain = sGroupGeneration;
 			pqQgen.Term = sVarGeneration + "[]";
 			pqQgen.Jacobian = TJacobianVol;
 			pp.Quantities.push_back(pqQgen);
+		}
+
+		if (GFlagNL_Conduction) {
+			postQuantity pqQNL;
+			pqQNL.Name = charQnl;
+			pqQNL.Domain = sGroupNL_Conduction;
+			pqQNL.Term = "-" + sVarNL_Conduction + "[ {";
+			pqQNL.Term += charT	+ "} ]*{d " + charT + "}";
+			pqQNL.Jacobian = TJacobianVol;
+			pp.Quantities.push_back(pqQNL);
 		}
 
 		return addPostProcessing(pp);

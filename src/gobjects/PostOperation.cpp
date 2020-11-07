@@ -18,9 +18,27 @@ namespace gobject {
 		postOp opQ;
 		opQ.OperationType = "Print";
 		opQ.OperationArgs.push_back(charQ);
-		opQ.OperationArgs.push_back("OnElementsOf " + TDomain);
+		opQ.OperationArgs.push_back("OnElementsOf " + sGroupConduction);
 		opQ.OperationArgs.push_back("File \"" + charQfile + "\"");
 		pop.Operations.push_back(opQ);
+
+		if (GFlagGeneration) {
+			postOp opQgen;
+			opQgen.OperationType = "Print";
+			opQgen.OperationArgs.push_back(charQgen);
+			opQgen.OperationArgs.push_back("OnElementsOf " + sGroupGeneration);
+			opQgen.OperationArgs.push_back("File \"" + charQgenfile + "\"");
+			pop.Operations.push_back(opQgen);
+		}
+
+		if (GFlagNL_Conduction) {
+			postOp opQNL;
+			opQNL.OperationType = "Print";
+			opQNL.OperationArgs.push_back(charQnl);
+			opQNL.OperationArgs.push_back("OnElementsOf " + sGroupNL_Conduction);
+			opQNL.OperationArgs.push_back("File \"" + charQfile + "\"");
+			pop.Operations.push_back(opQNL);
+		}
 
 		addPostOperation(pop);
 	}

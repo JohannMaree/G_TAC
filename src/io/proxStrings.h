@@ -16,5 +16,6 @@ namespace pstring {
 	void condenseWhitespace(std::string* str, const std::string& ws = " \t", char delim = ' ');
 	bool checkExtension(const std::string& filename, const std::string& ext);
 	bool isNumber(const std::string& str);
+	bool isWholeNumber(const std::string& str);
 
 }//end namespace pstring

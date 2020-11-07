@@ -2,21 +2,38 @@ IVAR kO=100 	DESC=K_Outer	MENU=Analysis MAX=600 MIN=0
 IVAR kI=200 	DESC=K_Inner	MENU=Analysis MAX=1000 MIN=0 STEP=2
 IVAR kW=800		DESC=K_Wire		MENU=Analysis MAX=1000 MIN=0 STEP=4
 
-IVAR h=25 		DESC=H_convec 		MENU=Analysis
-IVAR Tinf=80 	DESC=Tinf_Convec 	MENU=Analysis
-IVAR Tfix=40 	DESC=FixTemp 		MENU=Analysis
-IVAR Qflux=600 	DESC=HeatFlux 		MENU=Analysis
-IVAR Qgen1=200 	DESC=HeatGenWire 	MENU=Analysis
-IVAR Qgen2=0 	DESC=HeatGenSQU 	MENU=Analysis
+IVAR h=25 	 		MENU=Analysis
+IVAR Tinf=80  		MENU=Analysis
+IVAR Tfix=40 		MENU=Analysis
+IVAR Qflux=400 		MENU=Analysis
+IVAR QgenWire=200  	MENU=Analysis
+IVAR QgenInner=0	MENU=Analysis
+IVAR TdWire=8  		MENU=Analysis
 
 LOAD test/test.geo
-GMSH LOAD
+
+GROUP OuterQuad=1,2,3,4,1002
+GROUP InnerQuad=11,12,13,14,1001
+GROUP Wire=1003,103
 
 SET Rec1 COND=kO
-SET Rec2 COND=kI FLUX=Qflux
-SET Wire COND=kW
+SET Rec2 COND=kI TDISC=+4 GEN=QgenInner
+SET wireB COND=kW TDISC=TdWire GEN=QgenWire
 SET bound1 TEMP=Tfix
-SET bound2 FLUX=Qgen2
+SET bound2 FLUX=Qflux
 
-COMPILE test/test.pro
+GMSH LIST
+COMPILE test/test2d.pro
+GMSH MESH test/test2d.msh
 
+GMSH SET Dimension=1
+
+SET Vol1 COND=kO
+SET Vol2 COND=kI TDISC=+4 GEN=QgenInner
+SET Vol3 COND=kW TDISC=TdWire GEN=QgenWire
+SET outerB TEMP=Tfix
+SET innerT FLUX=Qflux
+
+GMSH LIST
+COMPILE test/test3d.pro
+GMSH MESH test/test3d.msh

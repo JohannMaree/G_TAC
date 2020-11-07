@@ -6,28 +6,42 @@
 namespace pstring {
 
 	std::vector<std::string> lex(const std::string& str, char delim) {
-		ind ct = str.find(delim);
 		std::vector<std::string> retv;
-		std::string token;
-		ind len = str.size();
+		if (str.empty()) {
+			return retv;
+		}
+
+		ind cm = str.find("//");
+		std::string sub;
+		if (cm != str.npos) {
+			sub = str.substr(0, cm - 1);
+		}
+		else {
+			sub = str;
+		}
+
+		ind ct = sub.find(delim);
 		if (ct != std::string::npos) {							//If more than 1 token:
-			retv.push_back(str.substr(0, ct));					//Put Command Type in slot[0] of vector ret
+			std::string token;
+			ind len = sub.size();
+			retv.push_back(sub.substr(0, ct));					//Put Command Type in slot[0] of vector ret
 			ind pl = ct + 1;
 			for (ind i = pl; i < len; ++i) {					//Put Command Parameters in slots[1 to n] of vector ret
-				if (str.at(i) == delim) {
-					token = str.substr(pl, i - pl);
+				if (sub.at(i) == delim) {
+					token = sub.substr(pl, i - pl);
 					retv.push_back(token);
 					pl = i + 1;
 				}
 			}
-			retv.push_back(str.substr(pl, len - 1));
+			retv.push_back(sub.substr(pl, len - 1));
 		}
 		else {													//If only 1 token:
-			retv.push_back(str);
+			retv.push_back(sub);
 		}
 		return retv;
 	}
 
+	/* Case insensitive String comparison */
 	bool icompare(const std::string& str, const std::string& ctxt) {
 		if (str.size() == ctxt.size()) {
 			return std::equal(ctxt.begin(), ctxt.end(), str.begin(), ccompare);
@@ -37,6 +51,7 @@ namespace pstring {
 		}
 	}
 
+	/* Case insensitive Char comparison */
 	bool ccompare(const char& a, const char& b) {
 		if (a == b) {
 			return true;
@@ -116,6 +131,15 @@ namespace pstring {
 		}
 		else {
 			return (str.find_first_not_of("0123456789+/-.") == std::string::npos);
+		}
+	}
+
+	bool isWholeNumber(const std::string& str) {
+		if (str.empty()) {
+			return false;
+		}
+		else {
+			return (str.find_first_not_of("0123456789") == std::string::npos);
 		}
 	}
 

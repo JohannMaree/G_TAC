@@ -27,7 +27,7 @@ namespace variables {
 	}
 
 	bool addVar(const std::vector<std::string>& parm) {
-		cvariable x;
+		variable x;
 		std::vector<std::string> strs;
 		strs = pstring::lex(parm[1],'=');
 		x.name = strs[0];
@@ -43,14 +43,7 @@ namespace variables {
 					setProperties(parm[i], &x);
 				}
 			}
-
-			if (x.type == 0) {
-				GRegister_Variables.push_back(std::make_unique<variable>(x));
-			}
-			else if (x.type == -1) {
-				GRegister_Variables.push_back(std::make_unique<cvariable>(x));
-			}
-
+			GRegister_Variables.push_back(std::make_unique<variable>(x));
 			return true;
 		}
 		else {
@@ -95,15 +88,25 @@ namespace variables {
 				v->description.exists = true;
 			}
 			else if (pstring::ifind(comm, varParmList[1])) {		//PAIRS
-				cvariable* cv = static_cast<cvariable*>(v);
-				cv->type = -1;
+				v->type = -1;
 				std::vector<std::string> cstr = pstring::lex(pstr[1], ';');
 				for (ind i = 0; i < cstr.size(); ++i) {
 					std::vector<std::string> tmp = pstring::lex(cstr[i], ',');
-					spair tp;
-					tp.one = tmp[0];
-					tp.two = tmp[1];
-					cv->spairs.emplace_back(tp);
+					if (!tmp.empty()) {
+						spair tp;
+						tp.one = tmp[0];
+						tp.two = tmp[1];
+						v->spairs.emplace_back(tp);
+					}
+				}
+			}	
+			else if (pstring::ifind(comm, varParmList[2])) {		//TENSOR
+				v->type = -2;
+				std::vector<std::string> cstr = pstring::lex(pstr[1], ';');
+				for (ind i = 0; i < cstr.size(); ++i) {
+					if (!cstr.empty()) {
+						v->tensorRow.emplace_back(cstr[i]);
+					}
 				}
 			}
 		}
@@ -187,25 +190,36 @@ namespace variables {
 					ret << v->name << "\t\t";
 					ret << "Type" << v->type << "\t\t";
 					ret << v->value << "\t\t";
-					ret << "Used:" << v->used;
 					if (v->description.exists) {
 						ret << "Desc:" << v->description.value << ", ";
 					}
 					ret << "\n";
 				}
 				else if (GRegister_Variables[i]->type == -1) {		//Pair VAR
-					cvariable* v = static_cast<cvariable*>(GRegister_Variables[i].get());
+					variable* v = GRegister_Variables[i].get();
 					ret << v->name << "\t\t";
 					ret << "Type" << v->type << "\t\t";
-					ret << "Used:" << v->used << ", ";
 					if (v->description.exists) {
 						ret << "Desc:" << v->description.value << ", ";
 					}
-					ret << "Pairs:";
+					ret << "Pairs:[";
 					for (ind k = 0; k < v->spairs.size(); ++k) {
 						ret << v->spairs[k].one << ", " << v->spairs[k].two << "; ";
 					}
-					ret << "\n";
+					ret << "]\n";
+				}
+				else if (GRegister_Variables[i]->type == -2) {		//Tensor VAR
+					variable* v = GRegister_Variables[i].get();
+					ret << v->name << "\t\t";
+					ret << "Type" << v->type << "\t\t";
+					if (v->description.exists) {
+						ret << "Desc:" << v->description.value << ", ";
+					}
+					ret << "Tensor:[";
+					for (ind k = 0; k < v->tensorRow.size(); ++k) {
+						ret << v->tensorRow[k] << "; ";
+					}
+					ret << "]\n";
 				}
 			}
 			ret << std::endl;
@@ -228,7 +242,6 @@ namespace variables {
 					ret << v->name << "\t\t";
 					ret << "Type" << v->type << "\t\t";
 					ret << v->value << "\t\t";
-					ret << "Used:" << v->used << ", ";
 					if (v->description.exists) {
 						ret << "Desc:" << v->description.value << ", ";
 					}
@@ -242,7 +255,6 @@ namespace variables {
 					ret << v->name << "\t\t";
 					ret << "Type" << v->type << "\t\t";
 					ret << v->value << "\t\t";
-					ret << "Used:" << v->used << ", ";
 					if (v->description.exists) {
 						ret << "Desc:" << v->description.value << ", ";
 					}
@@ -266,7 +278,6 @@ namespace variables {
 					ret << v->name << "\t\t";
 					ret << "Type" << v->type << "\t\t";
 					ret << v->value << "\t\t";
-					ret << "Used:" << v->used << ", ";
 					if (v->description.exists) {
 						ret << "Desc:" << v->description.value << ", ";
 					}

@@ -7,7 +7,8 @@ namespace execomm {
 	void help(const std::vector<std::string>& parm);
 	bool load(const std::vector<std::string>& parm);
 	void save(const std::vector<std::string>& parm);
-	void clcm();
+	void clear(const std::vector<std::string>& parm);
+	void clearAll();
 	void list(const std::vector<std::string>& parm);
 	bool set(const std::vector<std::string>& parm);
 	void del(const std::vector<std::string>& parm);
@@ -19,6 +20,12 @@ namespace execomm {
 		"IVAR",		//3
 		"RGN",		//4
 		"GROUP",	//5
+
+	};
+
+	const std::string listClear[] = {
+		"ALL",		//0
+		"MODEL",	//1
 
 	};
 

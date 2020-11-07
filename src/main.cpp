@@ -1,7 +1,8 @@
 #include "io/proxCommands.h"
+#include "io/proxGmsh.h"
+#include "external/include/gmsh.h"
 #include <iostream>
 #include <string>
-
 
 
 int main(int argc, char *argv[]) {
@@ -21,6 +22,20 @@ int main(int argc, char *argv[]) {
 			if (pro == 1) {
 				exit = true;
 				ret = 0;
+			}
+			if (pgmsh::gmshUI && !gmsh::fltk::isAvailable()) {
+				gmsh::fltk::initialize();
+				gmsh::option::setNumber("General.ShowModuleMenu", 0);
+				std::cout << "FLTK:initialize...\n";	//test
+			}
+			else if (pgmsh::gmshUI && gmsh::fltk::isAvailable()) {
+				gmsh::fltk::run();
+			}
+			if (pgmsh::gmshUI && pgmsh::gmshUIupdate) {
+				gmsh::fltk::update();
+				gmsh::fltk::awake("update");
+				std::cout << "FLTK:update.\n";	//test
+				pgmsh::gmshUIupdate = false;
 			}
 		}
 	}
