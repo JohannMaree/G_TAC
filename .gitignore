@@ -263,9 +263,8 @@ paket-files/
 __pycache__/
 *.pyc
 
-/src/external
 /build/onelab-Windows64
 /build/test/*.db
 /build/test2/*.db
 /build/chip_mod/*.db
-/build/chip_mod/chip_mod_manual.pro
+
