@@ -1,7 +1,7 @@
 # G_TAC
 ##### GetDP_Thermal Analysis Compiler
 
-G_TAC is a command-line parametric input application intended to reduce the time & effort invested in generating similar, repeatable Finite Element Analyses (FEAs).
+G_TAC is a command-line parametric input application aimed at reducing the time & effort invested in generating similar, repeatable Finite Element Analyses (FEAs).
 It compiles the C-style input files for the [GetDP](#getdp) solver and employs the [Gmsh](#gmsh) library to streamline the FEA process as much as possible.
 
 ---
@@ -11,30 +11,18 @@ It compiles the C-style input files for the [GetDP](#getdp) solver and employs t
 GetDP[(1)](#1-getdp-getdpinfo)(*General environment for the treatment of Discrete Problems*) is a free, open source finite element solver capable of using mixed elements to solve de Rham complexes in one, two and three dimensions.
 >"The main feature of GetDP is the closeness between the input data defining discrete problems( *ASCII data files (.pro)* ) and the symbolic mathematical expressions of these problems."
 
-G_TAC is used to compile and generate the ASCII text data input(*.pro*) files required by GetDP.
+G_TAC is used to compile and generate the C-style input files required by GetDP.
 
 ### Gmsh
-Gmsh[(2)](#2-gmsh-gmshinfo) is a free finite element mesh generator with a built-in CAD engine and post-processor. 
-Gmsh is built around 4 modules: geometry, mesh, solver and post-processing. The specification of any input to these modules is done either interactively using the graphical user interface, in ASCII text files
+Gmsh[(2)](#2-gmsh-gmshinfo) is an open source finite element mesh generator with a built-in CAD engine and post-processor.
+It utilises script files(*.geo* extension) to define geometry and mesh constraints.
 
-G_TAC 
+G_TAC has the option to employ the Gmsh C++ library to expedite the region definitions.
 
 ### ONELAB
-ONELAB[(3)](#3-onelab-onelabinfo)(*Open Numerical Engineering LABoratory*) provides an open-source graphical user interface to the Gmsh and GetDP finite element software.
-It allows for the seamless integration between the mesh generator and PDE solver.
+ONELAB[(3)](#3-onelab-onelabinfo)(*Open Numerical Engineering LABoratory*) provides an open-source graphical user interface(GUI) to the Gmsh and GetDP finite element software.
+It hosts the variables defined in both Gmsh and GetDP and allows for the seamless integration between the two.
 
----
-## Features
-- Associative region property definitions:
-  - reduces user input required to generate input(*.pro*) files for workable thermal finite element analyses.
-  - link variables/values to region properties
-- Automatically generated Partial Differential Equations(PDEs)
-- Default object definitions
-
-## Instructions
-- Download the latest snapshot of the ONELAB software bundle:
-  - [Windows 64-bit](http://onelab.info/files/onelab-Windows64.zip)
-  - [Windows 32-bit](http://onelab.info/files/onelab-Windows32.zip)
 
 
 
