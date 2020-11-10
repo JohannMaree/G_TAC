@@ -23,6 +23,8 @@ namespace command {
 		"GMSH",		//14
 		"GETDP",	//15
 
+		"COMPLETE", //End16
+
 	};
 
 	void switchcase(const int ctype, const std::vector<std::string>& comm);
