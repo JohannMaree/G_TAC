@@ -39,10 +39,10 @@ It allows for the seamless integration between the mesh generator and PDE solver
 
 
 ## References
-#### 1. GetDP [getdp.info](http://getdp.info)
+#### 1. GetDP [(getdp.info)](http://getdp.info)
 >  C. Geuzaine. GetDP: a general finite-element solver for the de Rham complex. In PAMM Volume 7 Issue 1. Special Issue: Sixth International Congress on Industrial Applied Mathematics (ICIAM07) and GAMM Annual Meeting, Zürich 2007 (pp. 1010603–1010604). Wiley.
 
-#### 2. Gmsh [gmsh.info](http://gmsh.info)
+#### 2. Gmsh [(gmsh.info)](http://gmsh.info)
 > C. Geuzaine and J.-F. Remacle. Gmsh: a three-dimensional finite element mesh generator with built-in pre- and post-processing facilities. International Journal for Numerical Methods in Engineering 79(11), pp. 1309-1331, 2009
 
-#### 3. ONELAB [onelab.info](http://onelab.info)
+#### 3. ONELAB [(onelab.info)](http://onelab.info)
