@@ -12,14 +12,14 @@ namespace gobject {
 		opT.OperationType = "Print";
 		opT.OperationArgs.push_back(charT);
 		opT.OperationArgs.push_back("OnElementsOf " + TDomain);
-		opT.OperationArgs.push_back("File \"" + charTfile + "\"");
+		opT.fileName = charTfile;
 		pop.Operations.push_back(opT);
 
 		postOp opQ;
 		opQ.OperationType = "Print";
 		opQ.OperationArgs.push_back(charQ);
 		opQ.OperationArgs.push_back("OnElementsOf " + sGroupConduction);
-		opQ.OperationArgs.push_back("File \"" + charQfile + "\"");
+		opQ.fileName = charQfile;
 		pop.Operations.push_back(opQ);
 
 		if (GFlagGeneration) {
@@ -27,7 +27,7 @@ namespace gobject {
 			opQgen.OperationType = "Print";
 			opQgen.OperationArgs.push_back(charQgen);
 			opQgen.OperationArgs.push_back("OnElementsOf " + sGroupGeneration);
-			opQgen.OperationArgs.push_back("File \"" + charQgenfile + "\"");
+			opQgen.fileName = charQgenfile;
 			pop.Operations.push_back(opQgen);
 		}
 
@@ -36,7 +36,7 @@ namespace gobject {
 			opQNL.OperationType = "Print";
 			opQNL.OperationArgs.push_back(charQnl);
 			opQNL.OperationArgs.push_back("OnElementsOf " + sGroupNL_Conduction);
-			opQNL.OperationArgs.push_back("File >> \"" + charQfile + "\"");
+			opQNL.fileName = charQfile;
 			pop.Operations.push_back(opQNL);
 		}
 

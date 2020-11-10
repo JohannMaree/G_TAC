@@ -379,7 +379,8 @@ namespace ppro {
 				for (ind k = 0; k < op->OperationArgs.size(); ++k) {
 					ss << op->OperationArgs[k] << ", ";
 				}
-				ss.seekp(-2, ss.cur);
+				ss << "File ";
+				ss << ">> \"" << op->fileName << "\"";	//Concatenate File Option
 				ss << "];\n";
 			}
 			ss << "\t\t}\n";

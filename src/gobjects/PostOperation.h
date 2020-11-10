@@ -7,6 +7,7 @@ namespace gobject {
 	struct postOp {
 		std::string OperationType;
 		std::vector<std::string> OperationArgs;
+		std::string fileName;
 	};
 
 	class PostOperation {

@@ -570,7 +570,7 @@ namespace compile {
 			poc.OperationType = "Print";
 			poc.OperationArgs.push_back(gobject::charTcont);
 			poc.OperationArgs.push_back("OnElementsOf " + gobject::TDomain);
-			poc.OperationArgs.push_back("File \"" + gobject::charTcontfile + "\"");
+			poc.fileName = gobject::charTcontfile;
 			po.Operations.push_back(poc);
 		}
 
@@ -578,7 +578,7 @@ namespace compile {
 		pod.OperationType = "Print";
 		pod.OperationArgs.push_back(gobject::charTdisc + std::to_string(rgn.discID));
 		pod.OperationArgs.push_back("OnElementsOf " + gobject::sDomainDiscontinuous + std::to_string(rgn.discID));
-		pod.OperationArgs.push_back("File \"" + gobject::charTdiscfile + "\"");
+		pod.fileName = gobject::charTdiscfile;
 		po.Operations.push_back(pod);
 
 		gobject::addPostOperation(po);

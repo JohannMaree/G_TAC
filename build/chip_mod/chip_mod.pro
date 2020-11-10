@@ -357,15 +357,15 @@ PostOperation {
 			Print[T, OnElementsOf Domain_H_gradT, File "T_map.pos"];
 			Print[q, OnElementsOf Cond_Regions, File "q_map.pos"];
 			Print[Qgen, OnElementsOf qGen_Regions, File "Qgen_map.pos"];
-			Print[qNL, OnElementsOf NL_Cond_Regions, File "q_map.pos"];
+			Print[qNL, OnElementsOf NL_Cond_Regions, File > "q_map.pos"];
 			Print[Tcn, OnElementsOf Domain_H_gradT, File "Tcn_map.pos"];
 			Print[Tdc1, OnElementsOf Disc_Dom1, File "Tdc_map.pos"];
-			Print[Tdc2, OnElementsOf Disc_Dom2, File "Tdc_map.pos"];
-			Print[Tdc3, OnElementsOf Disc_Dom3, File "Tdc_map.pos"];
-			Print[Tdc4, OnElementsOf Disc_Dom4, File "Tdc_map.pos"];
-			Print[Tdc5, OnElementsOf Disc_Dom5, File "Tdc_map.pos"];
-			Print[Tdc6, OnElementsOf Disc_Dom6, File "Tdc_map.pos"];
-			Print[Tdc7, OnElementsOf Disc_Dom7, File "Tdc_map.pos"];
+			Print[Tdc2, OnElementsOf Disc_Dom2, File > "Tdc_map.pos"];
+			Print[Tdc3, OnElementsOf Disc_Dom3, File > "Tdc_map.pos"];
+			Print[Tdc4, OnElementsOf Disc_Dom4, File > "Tdc_map.pos"];
+			Print[Tdc5, OnElementsOf Disc_Dom5, File > "Tdc_map.pos"];
+			Print[Tdc6, OnElementsOf Disc_Dom6, File > "Tdc_map.pos"];
+			Print[Tdc7, OnElementsOf Disc_Dom7, File > "Tdc_map.pos"];
 		}
 	}
 }
