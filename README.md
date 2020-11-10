@@ -8,19 +8,20 @@ It compiles the C-style input files for the GetDP[(1)](#1-getdp) solver, and fun
 ## Software Interactions
 ![Process Flow](doc/images/G_TAC_ProcessFlow.png?raw=true)
 ### GetDP
-GetDP([getdp.info](http://getdp.info))(*General environment for the treatment of Discrete Problems*) is a free, open source finite element solver capable of using mixed elements to solve de Rham complexes in one, two and three dimensions.
+[GetDP](#1-getdp)(*General environment for the treatment of Discrete Problems*) is a free, open source finite element solver capable of using mixed elements to solve de Rham complexes in one, two and three dimensions.
 >"The main feature of GetDP is the closeness between the input data defining discrete problems( *ASCII data files (.pro)* ) and the symbolic mathematical expressions of these problems."
 
 G_TAC is used to compile and generate the ASCII text data input(*.pro*) files required by GetDP.
 
 ### Gmsh
-Gmsh([getdp.info](http://getdp.info)) is a free finite element mesh generator with a built-in CAD engine and post-processor. 
+[Gmsh](#2-gmsh) is a free finite element mesh generator with a built-in CAD engine and post-processor. 
 Gmsh is built around 4 modules: geometry, mesh, solver and post-processing. The specification of any input to these modules is done either interactively using the graphical user interface, in ASCII text files
 
 G_TAC 
 
 ### ONELAB
-ONELAB([onelab.info](http://onelab.info))(*Open Numerical Engineering LABoratory*) is an open-source interface to the Gmsh and GetDP finite element software.
+[ONELAB](#3-onelab)(*Open Numerical Engineering LABoratory*) provides an open-source graphical user interface to the Gmsh and GetDP finite element software.
+It allows for the seamless integration between the mesh generator and PDE solver.
 
 ---
 ## Features
@@ -38,8 +39,10 @@ ONELAB([onelab.info](http://onelab.info))(*Open Numerical Engineering LABoratory
 
 
 ## References
-#### 1. GetDP
+#### 1. GetDP([getdp.info](http://getdp.info))
 >  C. Geuzaine. GetDP: a general finite-element solver for the de Rham complex. In PAMM Volume 7 Issue 1. Special Issue: Sixth International Congress on Industrial Applied Mathematics (ICIAM07) and GAMM Annual Meeting, Zürich 2007 (pp. 1010603–1010604). Wiley.
 
-#### 2. GMSH
+#### 2. GMSH([gmsh.info](http://getdp.info))
 > C. Geuzaine and J.-F. Remacle. Gmsh: a three-dimensional finite element mesh generator with built-in pre- and post-processing facilities. International Journal for Numerical Methods in Engineering 79(11), pp. 1309-1331, 2009
+
+#### 3. ONELAB([onelab.info](http://onelab.info))
