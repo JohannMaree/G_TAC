@@ -2,7 +2,7 @@
 ##### GetDP_Thermal Analysis Compiler
 
 G_TAC is a command-line parametric input application intended to reduce the time & effort invested in generating similar repeatable finite element analyses.
-It compiles the C-style input files for the GetDP[(1)](Page#1.-GetDP) solver, and functions alongside GMSH[(2)](Page#2.-GMSH) to streamline the process as far as possible.
+It compiles the C-style input files for the GetDP[(1)](#1.-getdp) solver, and functions alongside GMSH[(2)](#2.-gmsh) to streamline the process as far as possible.
 
 ---
 ## Software Interactions
