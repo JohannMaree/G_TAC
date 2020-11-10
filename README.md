@@ -5,7 +5,7 @@ G_TAC is a command-line parametric input application designed to reduce time tak
 
 ---
 ## Software Interactions
-![Process Flow](/relative/doc/images/G_TAC_ProcessFlow.png?raw=true)
+![Process Flow](doc/images/G_TAC_ProcessFlow.png?raw=true)
 ### GetDP
 GetDP([getdp.info](http://getdp.info))(*General environment for the treatment of Discrete Problems*) is a free, open source finite element solver capable of using mixed elements to solve de Rham complexes in one, two and three dimensions.
 >"The main feature of GetDP is the closeness between the input data defining discrete problems( *ASCII data files (.pro)* ) and the symbolic mathematical expressions of these problems."
