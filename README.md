@@ -1,7 +1,7 @@
 # G_TAC
 ##### GetDP_Thermal Analysis Compiler
 
-G_TAG is a command-line parametric input application designed to reduce time taken to generate steady-state thermal input files for GetDP.
+G_TAC is a command-line parametric input application designed to reduce time taken to generate steady-state thermal input files for GetDP.
 
 ---
 ## Software Interactions
@@ -9,13 +9,13 @@ G_TAG is a command-line parametric input application designed to reduce time tak
 GetDP([getdp.info](http://getdp.info))(*General environment for the treatment of Discrete Problems*) is a free, open source finite element solver capable of using mixed elements to solve de Rham complexes in one, two and three dimensions.
 >"The main feature of GetDP is the closeness between the input data defining discrete problems( *ASCII data files (.pro)* ) and the symbolic mathematical expressions of these problems."
 
-G_TAG is used to compile and generate the ASCII text data input(*.pro*) files required by GetDP.
+G_TAC is used to compile and generate the ASCII text data input(*.pro*) files required by GetDP.
 
 ### Gmsh
 Gmsh([getdp.info](http://getdp.info)) is a free finite element mesh generator with a built-in CAD engine and post-processor. 
 Gmsh is built around 4 modules: geometry, mesh, solver and post-processing. The specification of any input to these modules is done either interactively using the graphical user interface, in ASCII text files
 
-G_TAG 
+G_TAC 
 
 ### ONELAB
 ONELAB([onelab.info](http://onelab.info))(*Open Numerical Engineering LABoratory*) is an open-source interface to the Gmsh and GetDP finite element software.
@@ -37,6 +37,5 @@ ONELAB([onelab.info](http://onelab.info))(*Open Numerical Engineering LABoratory
 
 ## References
 GetDP
->
-Gmsh
+>  C. Geuzaine. GetDP: a general finite-element solver for the de Rham complex. In PAMM Volume 7 Issue 1. Special Issue: Sixth International Congress on Industrial Applied Mathematics (ICIAM07) and GAMM Annual Meeting, Zürich 2007 (pp. 1010603–1010604). Wiley.
 > C. Geuzaine and J.-F. Remacle. Gmsh: a three-dimensional finite element mesh generator with built-in pre- and post-processing facilities. International Journal for Numerical Methods in Engineering 79(11), pp. 1309-1331, 2009
