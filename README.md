@@ -2,7 +2,7 @@
 ##### GetDP_Thermal Analysis Compiler
 
 G_TAC is a command-line parametric input application intended to reduce the time & effort invested in generating similar repeatable finite element analyses.
-It compiles the C-style input files for the GetDP[(1)](####-1.GetDP) solver, and functions alongside GMSH[(2)](####-2.GMSH) to streamline the process as far as possible.
+It compiles the C-style input files for the GetDP[(1)](####1.-GetDP) solver, and functions alongside GMSH[(2)](####2.-GMSH) to streamline the process as far as possible.
 
 ---
 ## Software Interactions
@@ -38,8 +38,8 @@ ONELAB([onelab.info](http://onelab.info))(*Open Numerical Engineering LABoratory
 
 
 ## References
-#### 1.GetDP
+#### 1. GetDP
 >  C. Geuzaine. GetDP: a general finite-element solver for the de Rham complex. In PAMM Volume 7 Issue 1. Special Issue: Sixth International Congress on Industrial Applied Mathematics (ICIAM07) and GAMM Annual Meeting, Zürich 2007 (pp. 1010603–1010604). Wiley.
 
-#### 2.GMSH
+#### 2. GMSH
 > C. Geuzaine and J.-F. Remacle. Gmsh: a three-dimensional finite element mesh generator with built-in pre- and post-processing facilities. International Journal for Numerical Methods in Engineering 79(11), pp. 1309-1331, 2009
